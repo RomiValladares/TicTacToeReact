@@ -25,7 +25,7 @@ describe('gameLogic', () => {
 
     it('identifies a draw', () => {
         const board: Board = [
-            'X', 'P', 'X',
+            'X', 'O', 'X',
             'X', 'O', 'O',
             'O', 'X', 'X'
         ];

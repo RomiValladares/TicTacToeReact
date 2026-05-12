@@ -3,8 +3,8 @@
  */
 
 export const PLAYERS = {
-  X: 'X',
-  O: 'O'
+    X: 'X',
+    O: 'O'
 } as const;
 
 export type PlayerMark = (typeof PLAYERS)[keyof typeof PLAYERS];
@@ -28,19 +28,40 @@ const WIN_LINES: readonly (readonly number[])[] = [
 
 export type GameOutcome = PlayerMark | "draw" | null;
 
-export function getWinner(board: Board): GameOutcome {
-    // Check for a winner
+/**
+ * Returns the indices of the winning line [a, b, c] or null.
+ * We'll use this later to highlight the winning squares in the UI.
+ */
+export function getWinningLine(board: Board): readonly number[] | null {
     for (const [a, b, c] of WIN_LINES) {
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return board[a]; // Returns "X" or "O"
+        if (board[a] !== null && board[a] === board[b] && board[a] === board[c]) {
+            return [a, b, c];
         }
     }
+    return null;
+}
 
+// Updated getWinner to be more robust
+export function getWinner(board: Board): GameOutcome {
+    // Check for a winner
+    const line = getWinningLine(board);
+    if (line) return board[line[0]];
     // Check for a draw (if no nulls -> draw)
-    if (!board.includes(null)) {
+    if (board.every(cell => cell !== null)) {
         return "draw";
     }
-
     // Game is still ongoing
     return null;
 }
+///
+
+/**
+ * Creates a NEW board with the new move applied.
+ */
+export function applyMove(board: Board, index: number, mark: PlayerMark): Board {
+    const newBoard = [...board];
+    newBoard[index] = mark;
+    return newBoard;
+}
+
+
