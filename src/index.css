@@ -13,10 +13,12 @@
   --primary: #34d399;
   --secondary: #22d3ee;
   --bg-main: #020617;
+  /* Dark */
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --btn-bg: #f8fafc;
   --btn-text: #020617;
+  --glow-opacity: 0.3;
 }
 
 /* --- THEME OVERRIDES --- */
@@ -24,6 +26,7 @@
   --primary: #fb923c;
   --secondary: #f472b6;
   --bg-main: #0c0a09;
+  /* Dark Stone */
   --text-main: #fafaf9;
   --text-muted: #a8a29e;
   --btn-bg: #fafaf9;
@@ -34,15 +37,45 @@
   --primary: #2563eb;
   --secondary: #db2777;
   --bg-main: #ffffff;
+  /* White */
   --text-main: #0f172a;
   --text-muted: #64748b;
   --btn-bg: #0f172a;
   --btn-text: #ffffff;
+  --glow-opacity: 0.15;
 }
 
-/* --- BASE STYLES --- */
 body {
   margin: 0;
-  background-color: var(--bg-main);
-  transition: background-color 0.5s ease;
+  background-color: #020617;
+  /* Default fallback */
+}
+
+/* Animations */
+@keyframes blob-move {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(10%, -10%) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-5%, 10%) scale(0.9);
+  }
+}
+
+.atmosphere-blob {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  background: var(--primary);
+  opacity: var(--glow-opacity);
+  mix-blend-mode: plus-lighter;
+  animation: blob-move 25s infinite alternate ease-in-out;
+  will-change: transform;
 }

@@ -9,13 +9,7 @@ import {
     PLAYERS,
     type Board
 } from '../../core/gameLogic';
-
-const BackgroundAtmosphere = () => (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-(--primary)/10 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] rounded-full bg-(--secondary)/10 blur-[100px] animate-pulse [animation-delay:2s]" />
-    </div>
-);
+import { BackgroundAtmosphere } from './components/BackgroundAtmosphere';
 
 const ThemeButton = ({ type, current, onSelect }: { type: 'neon' | 'sunset' | 'classic', current: string, onSelect: (t: any) => void }) => (
     <button
@@ -118,7 +112,6 @@ export const TicTacToe: React.FC = () => {
 
     return (
         <div data-theme={theme} className="relative flex flex-col items-center min-h-screen bg-(--bg-main) text-(--text-main) p-6 transition-colors duration-500 font-sans overflow-hidden">
-            <BackgroundAtmosphere />
             <div className="relative z-10 flex flex-col items-center w-full">
                 <header className="w-full max-w-md flex flex-col items-center mb-10 mt-4">
                     <nav className="flex gap-3 mb-8 bg-(--text-main)/5 p-1.5 rounded-full border border-(--text-main)/10 backdrop-blur-md">
