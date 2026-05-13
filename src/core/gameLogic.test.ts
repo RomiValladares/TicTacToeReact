@@ -43,7 +43,7 @@ describe('gameLogic - AI Intelligence (Minimax)', () => {
             null, null, null
         ];
         // If AI is 'X', it should definitely pick index 2
-        expect(getBestMove(board, PLAYERS.X)).toBe(2);
+        expect(getBestMove(board, PLAYERS.X, "Impossible")).toBe(2);
     });
 
     it('AI blocks a human win', () => {
@@ -53,6 +53,6 @@ describe('gameLogic - AI Intelligence (Minimax)', () => {
             null, null, null
         ];
         // AI 'O' has no immediate win, so it MUST pick index 2 to block 'X'
-        expect(getBestMove(board, PLAYERS.O)).toBe(2);
+        expect(getBestMove(board, PLAYERS.O, "Impossible")).toBe(2);
     });
 });

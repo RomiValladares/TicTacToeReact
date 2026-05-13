@@ -11,6 +11,8 @@ export type PlayerMark = (typeof PLAYERS)[keyof typeof PLAYERS];
 export type Cell = PlayerMark | null;
 export type Board = readonly Cell[];
 
+export type DifficultyLevel = "Easy" | "Medium" | "Impossible";
+
 export function createEmptyBoard(): Board {
     return Array(9).fill(null);
 }
@@ -114,7 +116,28 @@ function minimax(
 /**
  * called from UI
  */
-export function getBestMove(board: Board, aiMark: PlayerMark): number | null {
+export function getBestMove(board: Board, aiMark: PlayerMark, difficulty: DifficultyLevel): number | null {
+    const emptyIndices = board
+        .map((cell, index) => (cell === null ? index : null))
+        .filter((index) => index !== null) as number[];
+
+    // No moves left
+    if (emptyIndices.length === 0) return null;
+
+    if (difficulty === "Easy") {
+        // just picks a random empty square
+        const randomIndex = Math.floor(Math.random() * emptyIndices.length);
+        return emptyIndices[randomIndex];
+    }
+
+    if (difficulty === "Medium") {
+        // 30% chance to be lazy
+        if (Math.random() < 0.3) {
+            const randomIndex = Math.floor(Math.random() * emptyIndices.length);
+            return emptyIndices[randomIndex];
+        }
+    }
+
     const humanMark: PlayerMark = aiMark === PLAYERS.X ? PLAYERS.O : PLAYERS.X;
     let bestScore = -Infinity;
     let move: number | null = null;
