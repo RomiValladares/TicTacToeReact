@@ -2,10 +2,10 @@
 
 This document serves as a technical audit trail for the development of the Tic-Tac-Toe app
 
-## Project Scaffolding & Infrastructure
-**Goal:** Establish a modern, scalable React/TypeScript environment.
+## Project Infrastructure
+**Goal:** Establish a modern React/TypeScript environment.
 
-### Prompt Used:
+### Prompt:
 "Initialize a professional Tic-Tac-Toe React project in this current empty directory.
 1. Run npm create vite@latest . -- --template react-ts
 2. Set up the folder structure: src/core, src/features/game, src/components, src/hooks, and src/types.
@@ -13,23 +13,33 @@ This document serves as a technical audit trail for the development of the Tic-T
 4. Initialize Git with main and develop branches.
 5. Create a README.md and a PROMPTS.md to track our progress"
 
-### Architectural Decisions:
-- **Environment:** Vite + React + TypeScript.
-- **Organization:** Modular folder structure to separate Domain Logic (`src/core`) from UI.
-
 ---
 
 ## Core Engine & AI (Minimax)
+**Goal:** Implement optimal move calculation via Minimax.
 
-### Prompt Used:
-"Create a pure TypeScript implementation of Minimax for Tic-Tac-Toe. It must use the PLAYERS constant and applyMove function I've already defined. Explain the recursive scoring logic."
+### Prompt:
+"Create a pure TypeScript implementation of Minimax for TicTacToe. It must use the PLAYERS constant and applyMove function I've already defined. Explain the recursive scoring logic."
 
+---
 
-## Refactoring
+## 3. Refactoring & Atomic Design
 
-### Prompt Used:
+### Prompt:
+"Refactor the existing TicTacToe.tsx component into a modular Atomic Component architecture. Replace the 'div-heavy' structure with reusable sub-components (e.g., Square, ThemeButton, ScoreCard). Optimize Tailwind CSS to align with v4 syntax. Replace arbitrary values with simplified shorthand (bg-[var(--name)] -> bg-(--name))."
 
-    "Refactor the existing monolithic TicTacToe.tsx component into a modular Atomic Component architecture. The primary goal is to replace the current 'div-heavy' structure with reusable sub-components (e.g., Square ThemeButton, ScoreCard) to improve maintainability and readability.
+---
 
-### Prompt Used:
-    Optimize the Tailwind CSS class declarations in TicTacToe.tsx to align with v4 syntax. Replace arbitrary value wrappers w the simplified shorthand (bg-[var(--name)] -> bg-(--name)) to resolve IntelliSense warnings. Migrate legacy gradient utilities to the modern syntax (bg-linear-to-br) and replace hardcoded values
+## 4. Animated Background
+**Goal:** Implement a high-performance, non-repeating atmospheric background.
+
+### Prompt:
+"Create a React component called BackgroundAtmosphere.tsx using framer-motion.
+1. **Randomness:** Use three motion.div bubbles with prime-number durations (19s, 23s, 29s) to ensure the pattern never repeats.
+2. **Visuals:** Use high CSS blurs (blur-[100px]) and mix-blend-mode: screen. Do not use SVG filters to avoid color banding.
+3. **Performance:** Wrap in React.memo to prevent re-animations on game state updates.
+4. **Theming:** Drive colors and opacities via CSS variables from index.css (target 10% opacity)."
+
+### Architectural Decisions:
+- **Animation:** Switched from CSS Keyframes to Framer Motion
+- **Optimization:** Utilized `React.memo` to decouple background rendering from game logic re-renders.

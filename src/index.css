@@ -26,7 +26,7 @@
   --btn-bg: #f8fafc;
   --btn-text: #020617;
 
-  --glow-opacity: 0.34;
+  --glow-opacity: 0.2;
   --blob-a-alpha: 1;
   --blob-b-alpha: 0.92;
   --blob-c-alpha: 0.78;
@@ -40,7 +40,7 @@
   --text-muted: #a8a29e;
   --btn-bg: #fafaf9;
   --btn-text: #0c0a09;
-  --glow-opacity: 0.32;
+  --glow-opacity: 0.2;
   --blob-a-alpha: 1;
   --blob-b-alpha: 0.95;
   --blob-c-alpha: 0.8;
@@ -54,7 +54,7 @@
   --text-muted: #64748b;
   --btn-bg: #0f172a;
   --btn-text: #ffffff;
-  --glow-opacity: 0.26;
+  --glow-opacity: 0;
   --blob-a-alpha: 0.88;
   --blob-b-alpha: 0.82;
   --blob-c-alpha: 0.72;
