@@ -30,3 +30,6 @@ This document serves as a technical audit trail for the development of the Tic-T
 ### Prompt Used:
 
     "Refactor the existing monolithic TicTacToe.tsx component into a modular Atomic Component architecture. The primary goal is to replace the current 'div-heavy' structure with reusable sub-components (e.g., Square ThemeButton, ScoreCard) to improve maintainability and readability.
+
+### Prompt Used:
+    Optimize the Tailwind CSS class declarations in TicTacToe.tsx to align with v4 syntax. Replace arbitrary value wrappers w the simplified shorthand (bg-[var(--name)] -> bg-(--name)) to resolve IntelliSense warnings. Migrate legacy gradient utilities to the modern syntax (bg-linear-to-br) and replace hardcoded values
