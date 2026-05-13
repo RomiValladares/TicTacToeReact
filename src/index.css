@@ -10,7 +10,6 @@
 
 /* --- GLOBAL VARIABLES --- */
 :root {
-  /* Default: Neon Theme (Dark) */
   --primary: #34d399;
   --secondary: #22d3ee;
   --bg-main: #020617;
@@ -18,10 +17,6 @@
   --text-muted: #94a3b8;
   --btn-bg: #f8fafc;
   --btn-text: #020617;
-
-  /* Typography */
-  --sans: 'Outfit', system-ui, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
 }
 
 /* --- THEME OVERRIDES --- */
@@ -36,36 +31,18 @@
 }
 
 [data-theme='classic'] {
-  --primary: #000000;
-  --secondary: #475569;
+  --primary: #2563eb;
+  --secondary: #db2777;
   --bg-main: #ffffff;
-  --text-main: #000000;
+  --text-main: #0f172a;
   --text-muted: #64748b;
-  --btn-bg: #000000;
+  --btn-bg: #0f172a;
   --btn-text: #ffffff;
 }
 
 /* --- BASE STYLES --- */
 body {
   margin: 0;
-  font-family: var(--sans);
-  background: var(--bg-main);
-  color: var(--text-main);
-  -webkit-font-smoothing: antialiased;
-}
-
-#root {
-  width: 100%;
-  margin: 0 auto;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 1024px) {
-  :root {
-    font-size: 16px;
-  }
+  background-color: var(--bg-main);
+  transition: background-color 0.5s ease;
 }
