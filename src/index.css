@@ -115,3 +115,34 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+@import "tailwindcss";
+
+@theme {
+  /* This maps Tailwind colors to our custom variables */
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-board-bg: var(--board-bg);
+}
+
+:root {
+  /* Default Theme (Neon) */
+  --primary: #34d399;   /* Emerald 400 */
+  --secondary: #22d3ee; /* Cyan 400 */
+  --board-bg: #0f172a;  /* Slate 900 */
+  --bg-main: #020617;   /* Slate 950 */
+}
+
+[data-theme='sunset'] {
+  --primary: #fb923c;   /* Orange 400 */
+  --secondary: #f472b6; /* Pink 400 */
+  --board-bg: #1c1917;  /* Stone 900 */
+  --bg-main: #0c0a09;   /* Stone 950 */
+}
+
+[data-theme='classic'] {
+  --primary: #3b82f6;   /* Blue 500 */
+  --secondary: #ef4444; /* Red 500 */
+  --board-bg: #f8fafc;  /* Slate 50 */
+  --bg-main: #ffffff;   /* White */
+}
