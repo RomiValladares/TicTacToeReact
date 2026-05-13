@@ -1,148 +1,71 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+/* --- THEME CONFIGURATION --- */
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui;
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+/* --- GLOBAL VARIABLES --- */
+:root {
+  /* Default: Neon Theme (Dark) */
+  --primary: #34d399;
+  --secondary: #22d3ee;
+  --bg-main: #020617;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --btn-bg: #f8fafc;
+  --btn-text: #020617;
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+  /* Typography */
+  --sans: 'Outfit', system-ui, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+}
+
+/* --- THEME OVERRIDES --- */
+[data-theme='sunset'] {
+  --primary: #fb923c;
+  --secondary: #f472b6;
+  --bg-main: #0c0a09;
+  --text-main: #fafaf9;
+  --text-muted: #a8a29e;
+  --btn-bg: #fafaf9;
+  --btn-text: #0c0a09;
+}
+
+[data-theme='classic'] {
+  --primary: #000000;
+  --secondary: #475569;
+  --bg-main: #ffffff;
+  --text-main: #000000;
+  --text-muted: #64748b;
+  --btn-bg: #000000;
+  --btn-text: #ffffff;
+}
+
+/* --- BASE STYLES --- */
+body {
+  margin: 0;
+  font-family: var(--sans);
+  background: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+/* Mobile Responsiveness */
+@media (max-width: 1024px) {
+  :root {
+    font-size: 16px;
   }
-}
-
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
-
-@import "tailwindcss";
-
-@theme {
-  /* This maps Tailwind colors to our custom variables */
-  --color-primary: var(--primary);
-  --color-secondary: var(--secondary);
-  --color-board-bg: var(--board-bg);
-}
-
-:root {
-  /* Default Theme (Neon) */
-  --primary: #34d399;   /* Emerald 400 */
-  --secondary: #22d3ee; /* Cyan 400 */
-  --board-bg: #0f172a;  /* Slate 900 */
-  --bg-main: #020617;   /* Slate 950 */
-}
-
-[data-theme='sunset'] {
-  --primary: #fb923c;   /* Orange 400 */
-  --secondary: #f472b6; /* Pink 400 */
-  --board-bg: #1c1917;  /* Stone 900 */
-  --bg-main: #0c0a09;   /* Stone 950 */
-}
-
-[data-theme='classic'] {
-  --primary: #3b82f6;   /* Blue 500 */
-  --secondary: #ef4444; /* Red 500 */
-  --board-bg: #f8fafc;  /* Slate 50 */
-  --bg-main: #ffffff;   /* White */
 }

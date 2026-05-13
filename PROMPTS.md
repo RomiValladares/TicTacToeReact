@@ -2,7 +2,7 @@
 
 This document serves as a technical audit trail for the development of the Tic-Tac-Toe app
 
-## Phase 1: Project Scaffolding & Infrastructure
+## Project Scaffolding & Infrastructure
 **Goal:** Establish a modern, scalable React/TypeScript environment.
 
 ### Prompt Used:
@@ -19,7 +19,14 @@ This document serves as a technical audit trail for the development of the Tic-T
 
 ---
 
-## Phase 2: Core Engine & AI (Minimax)
+## Core Engine & AI (Minimax)
 
 ### Prompt Used:
 "Create a pure TypeScript implementation of Minimax for Tic-Tac-Toe. It must use the PLAYERS constant and applyMove function I've already defined. Explain the recursive scoring logic."
+
+
+## Refactoring
+
+### Prompt Used:
+
+    "Refactor the existing monolithic TicTacToe.tsx component into a modular Atomic Component architecture. The primary goal is to replace the current 'div-heavy' structure with reusable sub-components (e.g., Square ThemeButton, ScoreCard) to improve maintainability and readability.

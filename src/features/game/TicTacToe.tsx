@@ -1,113 +1,133 @@
 import React, { useState, useEffect } from 'react';
+import { X, Circle, RotateCcw } from 'lucide-react';
 import {
     createEmptyBoard,
     applyMove,
     getWinner,
+    getWinningLine,
     getBestMove,
     PLAYERS,
     type Board
 } from '../../core/gameLogic';
 
-import { X, Circle, RotateCcw } from 'lucide-react';
-
 export const TicTacToe: React.FC = () => {
-  const [theme, setTheme] = useState<'neon' | 'sunset' | 'classic'>('neon');
-  const [board, setBoard] = useState<Board>(createEmptyBoard());
-  const [isXNext, setIsXNext] = useState<boolean>(true);
-  const [isAiThinking, setIsAiThinking] = useState<boolean>(false);
+    const [theme, setTheme] = useState<'neon' | 'sunset' | 'classic'>('neon');
+    const [board, setBoard] = useState<Board>(createEmptyBoard());
+    const [isXNext, setIsXNext] = useState<boolean>(true);
+    const [isAiThinking, setIsAiThinking] = useState<boolean>(false);
 
-  const winner = getWinner(board);
+    // Scoreboard State
+    const [scores, setScores] = useState({ X: 0, O: 0, draws: 0 });
 
-  useEffect(() => {
-    if (!isXNext && !winner) {
-      setIsAiThinking(true);
-      const timer = setTimeout(() => {
-        const aiMove = getBestMove(board, PLAYERS.O, "Impossible");
-        if (aiMove !== null) {
-          setBoard(prev => applyMove(prev, aiMove, PLAYERS.O));
-          setIsXNext(true);
+    const winner = getWinner(board);
+    const winLine = getWinningLine(board); // Get the [a, b, c] array
+
+    // Update scores when game ends
+    useEffect(() => {
+        if (winner === 'X') setScores(s => ({ ...s, X: s.X + 1 }));
+        if (winner === 'O') setScores(s => ({ ...s, O: s.O + 1 }));
+        if (winner === 'draw') setScores(s => ({ ...s, draws: s.draws + 1 }));
+    }, [winner]);
+
+    // AI Logic
+    useEffect(() => {
+        if (!isXNext && !winner) {
+            setIsAiThinking(true);
+            const timer = setTimeout(() => {
+                const aiMove = getBestMove(board, PLAYERS.O, "Impossible");
+                if (aiMove !== null) {
+                    setBoard(prev => applyMove(prev, aiMove, PLAYERS.O));
+                    setIsXNext(true);
+                }
+                setIsAiThinking(false);
+            }, 600);
+            return () => clearTimeout(timer);
         }
-        setIsAiThinking(false);
-      }, 600);
-      return () => clearTimeout(timer);
-    }
-  }, [isXNext, board, winner]);
+    }, [isXNext, board, winner]);
 
-  const handleSquareClick = (index: number) => {
-    if (board[index] || winner || isAiThinking) return;
-    setBoard(prev => applyMove(prev, index, PLAYERS.X));
-    setIsXNext(false);
-  };
+    const handleSquareClick = (index: number) => {
+        if (board[index] || winner || isAiThinking) return;
+        setBoard(prev => applyMove(prev, index, PLAYERS.X));
+        setIsXNext(false);
+    };
 
-  return (
-    <div data-theme={theme} className="flex flex-col items-center justify-center min-h-screen bg-[var(--bg-main)] text-slate-100 p-4 transition-colors duration-500">
-      
-      {/* Theme Switcher UI */}
-      <div className="flex gap-4 mb-12 bg-slate-900/40 p-2 rounded-full border border-slate-800">
-        {(['neon', 'sunset', 'classic'] as const).map((t) => (
-          <button 
-            key={t}
-            onClick={() => setTheme(t)}
-            className={`w-6 h-6 rounded-full border-2 transition-transform ${theme === t ? 'scale-125 border-white' : 'border-transparent opacity-50'}`}
-            style={{ backgroundColor: t === 'neon' ? '#34d399' : t === 'sunset' ? '#fb923c' : '#3b82f6' }}
-          />
-        ))}
-      </div>
+    return (
+        <div data-theme={theme} className="flex flex-col items-center min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] p-6 transition-colors duration-500">
 
-      <div className="text-center mb-8">
-        <h1 className="text-5xl font-extrabold tracking-tighter bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] bg-clip-text text-transparent mb-2">
-          Tic Tac Toe
-        </h1>
-        <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">
-          {theme} Edition
-        </p>
-      </div>
+            <header className="w-full max-w-md flex flex-col items-center mb-10 mt-4">
+                {/* Theme Switcher */}
+                <div className="flex gap-3 mb-8 bg-[var(--text-main)]/5 p-1.5 rounded-full border border-[var(--text-main)]/10">
+                    {(['neon', 'sunset', 'classic'] as const).map((t) => (
+                        <button
+                            key={t}
+                            onClick={() => setTheme(t)}
+                            className={`w-5 h-5 rounded-full border-2 transition-all ${theme === t ? 'scale-110 border-[var(--text-main)]' : 'border-transparent opacity-40'}`}
+                            style={{ backgroundColor: t === 'neon' ? '#34d399' : t === 'sunset' ? '#fb923c' : '#3b82f6' }}
+                        />
+                    ))}
+                </div>
 
-      {/* Board with Ghost Hovers */}
-      <div className="grid grid-cols-3 gap-4 bg-slate-900/30 p-4 rounded-3xl border border-white/5 shadow-2xl backdrop-blur-sm">
-        {board.map((cell, i) => (
-          <button
-            key={i}
-            onClick={() => handleSquareClick(i)}
-            disabled={!!cell || !!winner || isAiThinking}
-            // "group" class enables the ghost hover effect
-            className="group relative w-20 h-20 sm:w-28 sm:h-28 rounded-2xl bg-slate-900/80 border border-white/5 flex items-center justify-center transition-all duration-200 hover:bg-slate-800/50 hover:scale-105 active:scale-95 disabled:hover:scale-100"
-          >
-            {/* The Marks (Icons instead of Text) */}
-            {cell === 'X' && <X size={48} strokeWidth={3} className="text-[var(--primary)] drop-shadow-[0_0_8px_var(--primary)]" />}
-            {cell === 'O' && <Circle size={40} strokeWidth={3} className="text-[var(--secondary)] drop-shadow-[0_0_8px_var(--secondary)]" />}
+                <h1 className="text-6xl font-black tracking-tighter bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] bg-clip-text text-transparent leading-tight text-center drop-shadow-sm">
+                    TIC TAC TOE
+                </h1>
+                <p className="text-[var(--text-muted)] font-black uppercase tracking-[0.2em] text-[10px] mt-2">
+                    {theme} edition
+                </p>
+            </header>
 
-            {/* THE GHOST: Only visible on hover if cell is empty */}
-            {!cell && !winner && !isAiThinking && (
-              <div className="opacity-0 group-hover:opacity-20 transition-opacity duration-200">
-                {isXNext ? <X size={48} strokeWidth={3} className="text-[var(--primary)]" /> : <Circle size={40} strokeWidth={3} className="text-[var(--secondary)]" />}
-              </div>
-            )}
-          </button>
-        ))}
-      </div>
+            {/* BOARD */}
+            <main className="grid grid-cols-3 gap-4 bg-[var(--text-main)]/5 p-4 rounded-[2.5rem] border border-[var(--text-main)]/10 shadow-2xl backdrop-blur-xl mb-12">
+                {board.map((cell, i) => {
+                    const isWinningSquare = winLine?.includes(i);
+                    return (
+                        <button
+                            key={i}
+                            onClick={() => handleSquareClick(i)}
+                            disabled={!!cell || !!winner || isAiThinking}
+                            className={`
+                group relative w-24 h-24 sm:w-28 sm:h-28 rounded-[1.5rem] bg-[var(--bg-main)] border border-[var(--text-main)]/10
+                flex items-center justify-center transition-all duration-300
+                ${isWinningSquare ? 'ring-4 ring-[var(--primary)]/50 bg-[var(--primary)]/10 scale-105' : 'hover:bg-[var(--text-main)]/5'}
+              `}
+                        >
+                            {cell === 'X' && <X size={44} strokeWidth={3} className="text-[var(--primary)]" />}
+                            {cell === 'O' && <Circle size={38} strokeWidth={3} className="text-[var(--secondary)]" />}
 
-      <div className="mt-12 flex flex-col items-center gap-8">
-        <div className="text-xl font-bold tracking-tight">
-          {winner ? (
-            <span className="text-yellow-400">
-              {winner === 'draw' ? "IT'S A DRAW" : `${winner} WINS`}
-            </span>
-          ) : (
-            <span className="opacity-80">
-              {isAiThinking ? "AI IS ANALYZING..." : `PLAYER ${isXNext ? 'X' : 'O'} TURN`}
-            </span>
-          )}
+                            {!cell && !winner && !isAiThinking && (
+                                <div className="opacity-0 group-hover:opacity-10 transition-opacity">
+                                    {isXNext ? <X size={44} strokeWidth={3} className="text-[var(--text-main)]" /> : <Circle size={38} strokeWidth={3} className="text-[var(--text-main)]" />}
+                                </div>
+                            )}
+                        </button>
+                    );
+                })}
+            </main>
+
+            <footer className="w-full max-w-xs flex flex-col items-center gap-8">
+                {/* Scoreboard */}
+                <div className="grid grid-cols-3 w-full bg-[var(--text-main)]/5 rounded-3xl border border-[var(--text-main)]/10 p-4">
+                    <div className="flex flex-col items-center border-r border-[var(--text-main)]/10">
+                        <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">Player</span>
+                        <span className="text-2xl font-black text-[var(--primary)]">{scores.X}</span>
+                    </div>
+                    <div className="flex flex-col items-center border-r border-[var(--text-main)]/10">
+                        <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">Draws</span>
+                        <span className="text-2xl font-black">{scores.draws}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">AI</span>
+                        <span className="text-2xl font-black text-[var(--secondary)]">{scores.O}</span>
+                    </div>
+                </div>
+
+                <button
+                    onClick={() => setBoard(createEmptyBoard())}
+                    className="flex items-center gap-3 px-12 py-4 bg-[var(--btn-bg)] text-[var(--btn-text)] font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/5"
+                >
+                    <RotateCcw size={18} />
+                    REMATCH
+                </button>
+            </footer>
         </div>
-
-        <button
-          onClick={() => setBoard(createEmptyBoard())}
-          className="group flex items-center gap-2 px-10 py-4 bg-slate-100 text-slate-950 font-black rounded-2xl hover:bg-white hover:-translate-y-1 transition-all"
-        >
-          <RotateCcw size={20} className="group-hover:rotate-[-45deg] transition-transform" />
-          NEW GAME
-        </button>
-      </div>
-    </div>
-  );
+    );
 };
