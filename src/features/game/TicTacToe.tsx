@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Circle, RotateCcw, Trophy } from 'lucide-react';
+import { X, Circle, RotateCcw, Trophy, Volume2, VolumeX } from 'lucide-react';
+
 import {
     createEmptyBoard,
     applyMove,
@@ -21,6 +22,9 @@ const THEME_SWATCH: Record<ThemeId, string> = {
     sunset: '#fb923c',
     classic: '#3b82f6',
 };
+
+type Difficulty = 'easy' | 'medium' | 'unbeatable';
+const DIFFICULTY_LEVELS: Difficulty[] = ['easy', 'medium', 'unbeatable'];
 
 /** Shared frosted panels (nav / board / score strip). */
 const surfaceMuted = 'border border-(--text-main)/10 bg-(--text-main)/5 backdrop-blur-md';
@@ -111,9 +115,9 @@ const GameStatus = ({
 }) => {
     if (winner === 'draw') {
         return (
-            <div className="flex h-10 items-center">
-                <span className="border-y border-(--text-main)/10 py-1 text-sm font-black uppercase tracking-[0.3em] text-(--text-muted)">
-                    Settled in a Draw
+            <div className="flex h-10 items-center justify-center">
+                <span className="border-y border-(--text-main)/10 py-1 text-xs font-black uppercase tracking-[0.2em] text-(--text-muted)">
+                    Draw Game
                 </span>
             </div>
         );
@@ -121,17 +125,17 @@ const GameStatus = ({
 
     if (winner) {
         return (
-            <div className="title-glow-primary flex h-10 items-center gap-3 text-3xl font-black tracking-tighter text-(--primary)">
-                <Trophy size={28} strokeWidth={2.5} />
-                <span className="italic uppercase">{winner} Takes the Win</span>
+            <div className="title-glow-primary flex h-10 items-center justify-center gap-2 text-xl font-black tracking-tighter text-(--primary)">
+                <Trophy size={20} strokeWidth={2.5} />
+                <span className="uppercase">{winner} WINS</span>
             </div>
         );
     }
 
     return (
-        <div className="flex h-10 items-center">
+        <div className="flex h-10 items-center justify-center">
             <p className="text-xs font-bold uppercase tracking-widest text-(--text-muted) opacity-80">
-                {isAiThinking ? 'AI is calculating...' : `Current Turn: ${isXNext ? 'X' : 'O'}`}
+                {isAiThinking ? 'AI Thinking...' : `Turn: ${isXNext ? 'X' : 'O'}`}
             </p>
         </div>
     );
@@ -143,6 +147,8 @@ export const TicTacToe: React.FC = () => {
     const [isXNext, setIsXNext] = useState(true);
     const [isAiThinking, setIsAiThinking] = useState(false);
     const [scores, setScores] = useState({ X: 0, O: 0, draws: 0 });
+    const [difficulty, setDifficulty] = useState<Difficulty>('unbeatable');
+    const [isSoundOn, setIsSoundOn] = useState<boolean>(true);
 
     const winner = getWinner(board);
     const winLine = getWinningLine(board);
@@ -175,27 +181,52 @@ export const TicTacToe: React.FC = () => {
     return (
         <div
             data-theme={theme}
-            className="relative flex min-h-screen flex-col items-center overflow-hidden bg-(--bg-main) p-6 font-sans text-(--text-main) transition-colors duration-500"
+            className="relative flex min-h-screen flex-col items-center overflow-hidden bg-(--bg-main) p-6 font-sans text-(--text-main) transition-colors duration-500 justify-center"
         >
             <BackgroundAtmosphere />
             <div className="relative z-10 flex w-full flex-col items-center">
-                <header className="mb-10 mt-4 flex w-full max-w-md flex-col items-center">
-                    <nav className={`${surfaceMuted} mb-8 flex gap-3 rounded-full p-1.5`}>
+                <header className="mb-6 mt-4 flex w-full max-w-md flex-col items-center">
+                    <nav className={`${surfaceMuted} mb-6 flex gap-3 rounded-full p-1.5`}>
                         {THEME_IDS.map((t) => (
                             <ThemeButton key={t} type={t} current={theme} onSelect={setTheme} />
                         ))}
                     </nav>
 
-                    <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-center text-6xl font-black leading-tight tracking-tighter text-transparent drop-shadow-sm">
+                    <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-center text-5xl font-black leading-tight tracking-tighter text-transparent drop-shadow-sm select-none">
                         TIC TAC TOE
                     </h1>
-                    <p className="mt-2 text-[10px] font-black uppercase tracking-[0.2em] text-(--text-muted)">
-                        {theme} edition
-                    </p>
                 </header>
 
+                {/* Status bar configuration matching the layout width footprint of the board */}
+                <div className="grid w-full max-w-[320px] sm:max-w-[384px] grid-cols-3 items-center mb-2 px-1">
+                    <div /> {/* Left cell empty to balance out grid tracking layout */}
+
+                    <div className="flex justify-center text-center">
+                        <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setBoard(createEmptyBoard())}
+                            className="p-1 text-(--text-muted) hover:text-(--primary) transition-colors cursor-pointer"
+                            title="Rematch"
+                        >
+                            <RotateCcw size={20} />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setIsSoundOn(!isSoundOn)}
+                            className="p-1 text-(--text-muted) hover:text-(--primary) transition-colors cursor-pointer"
+                            title={isSoundOn ? "Mute Sound" : "Unmute Sound"}
+                        >
+                            {isSoundOn ? <Volume2 size={20} /> : <VolumeX size={20} />}
+                        </button>
+                    </div>
+                </div>
+
                 <main
-                    className={`${surfaceMuted} mb-12 grid grid-cols-3 gap-4 rounded-3xl p-4 shadow-2xl backdrop-blur-xl`}
+                    className={`${surfaceMuted} mb-8 grid grid-cols-3 gap-4 rounded-3xl p-4 shadow-2xl backdrop-blur-xl`}
                 >
                     {board.map((cell, i) => (
                         <Square
@@ -212,23 +243,28 @@ export const TicTacToe: React.FC = () => {
                     ))}
                 </main>
 
-                <footer className="flex w-full max-w-xs flex-col items-center gap-8">
+                <footer className="flex w-full max-w-xs flex-col items-center gap-6">
+                    <div className="w-full grid grid-cols-3 p-1 bg-(--text-main)/5 rounded-xl border border-(--text-main)/10 text-center text-[10px] font-black tracking-wider uppercase">
+                        {DIFFICULTY_LEVELS.map((level) => (
+                            <button
+                                key={level}
+                                type="button"
+                                onClick={() => setDifficulty(level)}
+                                className={`py-2 rounded-lg transition-all text-xs font-bold tracking-wider uppercase cursor-pointer ${difficulty === level
+                                        ? 'bg-(--text-main) text-(--bg-main) dark:bg-(--text-main)/15 dark:text-(--text-main) shadow-xs font-black scale-[1.01]'
+                                        : 'text-(--text-muted) hover:text-(--text-main)'
+                                    }`}
+                            >
+                                {level}
+                            </button>
+                        ))}
+                    </div>
+
                     <div className={`${surfaceMuted} grid w-full grid-cols-3 rounded-3xl p-4`}>
                         <ScoreCard label="Player" score={scores.X} colorClass="text-(--primary)" />
                         <ScoreCard label="Draws" score={scores.draws} colorClass="text-(--text-main)" />
                         <ScoreCard label="AI" score={scores.O} colorClass="text-(--secondary)" isLast />
                     </div>
-
-                    <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
-
-                    <button
-                        type="button"
-                        onClick={() => setBoard(createEmptyBoard())}
-                        className="flex items-center gap-3 rounded-2xl bg-(--btn-bg) px-12 py-4 font-black text-(--btn-text) shadow-xl transition-all hover:scale-105 active:scale-95"
-                    >
-                        <RotateCcw size={18} />
-                        REMATCH
-                    </button>
                 </footer>
             </div>
         </div>
