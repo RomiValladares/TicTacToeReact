@@ -188,7 +188,7 @@ export const TicTacToe: React.FC = () => {
             
             <div className="relative z-10 flex w-full max-w-xs flex-col gap-4 items-center">
                 
-                {/* 1. HEADER UTILITIES ZONE */}
+                {/* HEADER */}
                 <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
                     <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-2xl font-black tracking-tighter text-transparent select-none">
                         TIC TAC TOE
@@ -210,10 +210,10 @@ export const TicTacToe: React.FC = () => {
                     </div>
                 </header>
 
-                {/* 2. METADATA STATUS ZONE */}
+                {/* METADATA */}
                 <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
 
-                {/* 3. INTERACTIVE GAME GRID */}
+                {/* GAME GRID */}
                 <main className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl p-3 shadow-2xl w-full`}>
                     {board.map((cell, i) => (
                         <Square
@@ -230,7 +230,7 @@ export const TicTacToe: React.FC = () => {
                     ))}
                 </main>
 
-                {/* 4. PRIMARY TERMINAL ACTION (SLIM REMATCH WITH ASYNC BUGFIX INCLUDED) */}
+                {/* REMATCH */}
                 <button
                     type="button"
                     onClick={() => {
@@ -244,14 +244,14 @@ export const TicTacToe: React.FC = () => {
                     Rematch
                 </button>
 
-                {/* 5. HISTORICAL METRICS ZONE */}
+                {/* METRICS */}
                 <div className={`${surfaceMuted} grid w-full grid-cols-3 rounded-2xl p-3 shadow-sm`}>
                     <ScoreCard label="Player" score={scores.X} colorClass="text-(--primary)" />
                     <ScoreCard label="Draws" score={scores.draws} colorClass="text-(--text-main)" />
                     <ScoreCard label="AI" score={scores.O} colorClass="text-(--secondary)" isLast />
                 </div>
 
-                {/* 6. SYSTEM CONFIGURATION ZONE */}
+                {/* DIFFICULTY SELECT */}
                 <div className="grid w-full grid-cols-3 p-1 bg-(--text-main)/5 rounded-xl border border-(--text-main)/10 text-center text-[10px] font-bold tracking-wider uppercase">
                     {DIFFICULTY_LEVELS.map((level) => (
                         <button
