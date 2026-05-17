@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Circle, RotateCcw, Trophy, Volume2, VolumeX } from 'lucide-react';
+import { playSound } from './soundEffects';
 
 import {
     createEmptyBoard,
@@ -156,13 +157,19 @@ export const TicTacToe: React.FC = () => {
 
     useEffect(() => {
         if (!winner) return;
+
+        // Play end game chime
+        if (isSoundOn) {
+            playSound(winner === 'draw' ? 'draw' : 'win');
+        }
+
         setScores((s) => {
             if (winner === 'X') return { ...s, X: s.X + 1 };
             if (winner === 'O') return { ...s, O: s.O + 1 };
             if (winner === 'draw') return { ...s, draws: s.draws + 1 };
             return s;
         });
-    }, [winner]);
+    }, [winner, isSoundOn]);
 
     useEffect(() => {
         if (!isXNext && !winner) {
@@ -171,13 +178,15 @@ export const TicTacToe: React.FC = () => {
                 const aiMove = getBestMove(board, PLAYERS.O, 'Impossible');
                 if (aiMove !== null) {
                     setBoard((prev) => applyMove(prev, aiMove, PLAYERS.O));
+                    if (isSoundOn) playSound('clickO');
+
                     setIsXNext(true);
                 }
                 setIsAiThinking(false);
             }, 600);
             return () => clearTimeout(timer);
         }
-    }, [isXNext, board, winner]);
+    }, [isXNext, board, winner, isSoundOn]);
 
     return (
         <div
@@ -185,9 +194,9 @@ export const TicTacToe: React.FC = () => {
             className="relative flex min-h-screen flex-col items-center overflow-hidden bg-(--bg-main) p-6 font-sans text-(--text-main) transition-colors duration-500 justify-center"
         >
             <BackgroundAtmosphere />
-            
+
             <div className="relative z-10 flex w-full max-w-xs flex-col gap-4 items-center">
-                
+
                 {/* HEADER */}
                 <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
                     <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-2xl font-black tracking-tighter text-transparent select-none">
@@ -223,6 +232,8 @@ export const TicTacToe: React.FC = () => {
                             isXNext={isXNext}
                             disabled={!!cell || !!winner || isAiThinking}
                             onClick={() => {
+                                if (isSoundOn) playSound('clickX');
+
                                 setBoard((prev) => applyMove(prev, i, PLAYERS.X));
                                 setIsXNext(false);
                             }}
@@ -258,11 +269,10 @@ export const TicTacToe: React.FC = () => {
                             key={level}
                             type="button"
                             onClick={() => setDifficulty(level)}
-                            className={`py-1.5 rounded-lg transition-all cursor-pointer ${
-                                difficulty === level
-                                    ? 'bg-(--text-main)/10 text-(--text-main) font-black shadow-xs scale-[1.01]'
-                                    : 'text-(--text-muted) hover:text-(--text-main)'
-                            }`}
+                            className={`py-1.5 rounded-lg transition-all cursor-pointer ${difficulty === level
+                                ? 'bg-(--text-main)/10 text-(--text-main) font-black shadow-xs scale-[1.01]'
+                                : 'text-(--text-muted) hover:text-(--text-main)'
+                                }`}
                         >
                             {level}
                         </button>
