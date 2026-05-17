@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Circle, RotateCcw, Volume2, VolumeX } from 'lucide-react';
+import { X, Circle, RotateCcw, Trophy, Volume2, VolumeX } from 'lucide-react';
 
 import {
     createEmptyBoard,
@@ -185,11 +185,10 @@ export const TicTacToe: React.FC = () => {
             className="relative flex min-h-screen flex-col items-center overflow-hidden bg-(--bg-main) p-6 font-sans text-(--text-main) transition-colors duration-500 justify-center"
         >
             <BackgroundAtmosphere />
-
-            {/* Rigid max-w-xs layout wrapper to bound all items cleanly to the board footprint */}
+            
             <div className="relative z-10 flex w-full max-w-xs flex-col gap-4 items-center">
-
-                {/* HEADER UTILITIES */}
+                
+                {/* 1. HEADER UTILITIES ZONE */}
                 <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
                     <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-2xl font-black tracking-tighter text-transparent select-none">
                         TIC TAC TOE
@@ -211,10 +210,10 @@ export const TicTacToe: React.FC = () => {
                     </div>
                 </header>
 
-                {/* METADATA STATUS ZONE */}
+                {/* 2. METADATA STATUS ZONE */}
                 <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
 
-                {/* GAME GRID */}
+                {/* 3. INTERACTIVE GAME GRID */}
                 <main className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl p-3 shadow-2xl w-full`}>
                     {board.map((cell, i) => (
                         <Square
@@ -231,34 +230,39 @@ export const TicTacToe: React.FC = () => {
                     ))}
                 </main>
 
-                {/* REMATCH }
+                {/* 4. PRIMARY TERMINAL ACTION (SLIM REMATCH WITH ASYNC BUGFIX INCLUDED) */}
                 <button
                     type="button"
-                    onClick={() => setBoard(createEmptyBoard())}
+                    onClick={() => {
+                        setBoard(createEmptyBoard());
+                        setIsXNext(true);
+                        setIsAiThinking(false);
+                    }}
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-(--btn-bg) py-2.5 text-xs font-black tracking-widest text-(--btn-text) shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer uppercase"
                 >
                     <RotateCcw size={14} strokeWidth={2.5} />
                     Rematch
                 </button>
 
-                {/* METRICS  */}
+                {/* 5. HISTORICAL METRICS ZONE */}
                 <div className={`${surfaceMuted} grid w-full grid-cols-3 rounded-2xl p-3 shadow-sm`}>
                     <ScoreCard label="Player" score={scores.X} colorClass="text-(--primary)" />
                     <ScoreCard label="Draws" score={scores.draws} colorClass="text-(--text-main)" />
                     <ScoreCard label="AI" score={scores.O} colorClass="text-(--secondary)" isLast />
                 </div>
 
-                {/* LEVELS */}
+                {/* 6. SYSTEM CONFIGURATION ZONE */}
                 <div className="grid w-full grid-cols-3 p-1 bg-(--text-main)/5 rounded-xl border border-(--text-main)/10 text-center text-[10px] font-bold tracking-wider uppercase">
                     {DIFFICULTY_LEVELS.map((level) => (
                         <button
                             key={level}
                             type="button"
                             onClick={() => setDifficulty(level)}
-                            className={`py-1.5 rounded-lg transition-all cursor-pointer ${difficulty === level
+                            className={`py-1.5 rounded-lg transition-all cursor-pointer ${
+                                difficulty === level
                                     ? 'bg-(--text-main)/10 text-(--text-main) font-black shadow-xs scale-[1.01]'
                                     : 'text-(--text-muted) hover:text-(--text-main)'
-                                }`}
+                            }`}
                         >
                             {level}
                         </button>
