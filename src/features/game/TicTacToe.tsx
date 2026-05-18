@@ -294,19 +294,6 @@ export const TicTacToe: React.FC = () => {
                         );
                     })}
                 </div>
-
-                <button
-                    type="button"
-                    onClick={() => {
-                        setBoard(createEmptyBoard());
-                        setIsXNext(true);        // Restores turn sequence to Player
-                        setIsAiThinking(false);  // Stop any pending async state trigger
-                    }}
-                    className="flex items-center gap-3 rounded-2xl bg-(--btn-bg) px-12 py-4 font-black text-(--btn-text) shadow-xl transition-all hover:scale-105 active:scale-95"
-                >
-                    <RotateCcw size={18} />
-                    REMATCH
-                </button>
             </div>
         </div>
     );
