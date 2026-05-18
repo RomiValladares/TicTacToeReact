@@ -244,61 +244,73 @@ export const TicTacToe: React.FC = () => {
 
     const gridRef = useRef<HTMLDivElement>(null);
     const rematchBtnRef = useRef<HTMLButtonElement>(null);
+    const lastInteractionRef = useRef<number>(4); // Ghost memory tracker
 
-    const handleGridKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        const buttons = gridRef.current?.querySelectorAll<HTMLButtonElement>('button');
-        if (!buttons) return;
-
-        const active = document.activeElement as HTMLButtonElement;
-        const buttonsArray = Array.from(buttons);
-        const currentIndex = buttonsArray.indexOf(active);
-
-        if (currentIndex === -1) return;
-
-        let targetIndex = currentIndex;
-        let step = 0;
-
-        switch (e.key) {
-            case 'ArrowRight': step = 1; break;
-            case 'ArrowLeft': step = -1; break;
-            case 'ArrowDown': step = 3; break;
-            case 'ArrowUp': step = -3; break;
-            default: return;
-        }
-
-        e.preventDefault();
-
-        let nextIndex = currentIndex;
-        while (step !== 0) {
-            nextIndex = (nextIndex + step + 9) % 9;
-            if (nextIndex === currentIndex) break;
-
-            if (!buttonsArray[nextIndex].disabled) {
-                targetIndex = nextIndex;
-                break;
-            }
-        }
-
-        buttonsArray[targetIndex]?.focus();
-    };
-
-    // Global Hotkey Interceptor for instant 1-9 direct entry
+    // Global Keyboard Engine (Numbers + Arrows + Focus Recovery)
     useEffect(() => {
         const handleGlobalKeyDown = (e: KeyboardEvent) => {
-            if (/^[1-9]$/.test(e.key)) {
-                const buttons = gridRef.current?.querySelectorAll<HTMLButtonElement>('button');
-                if (!buttons) return;
+            const buttons = gridRef.current?.querySelectorAll<HTMLButtonElement>('button');
+            if (!buttons) return;
 
-                const buttonsArray = Array.from(buttons);
+            const buttonsArray = Array.from(buttons);
+
+            // 1. DIRECT NUMBER INPUT (1-9)
+            if (/^[1-9]$/.test(e.key)) {
                 const targetIndex = parseInt(e.key, 10) - 1;
                 const targetButton = buttonsArray[targetIndex];
 
-                // If the target square exists and is open, play it immediately
                 if (targetButton && !targetButton.disabled) {
                     e.preventDefault();
                     targetButton.focus();
                     targetButton.click();
+                    lastInteractionRef.current = targetIndex; // Update ghost memory
                 }
+                return;
+            }
+
+            // 2. ARROW KEY TRAVERSAL
+            let step = 0;
+            switch (e.key) {
+                case 'ArrowRight': step = 1; break;
+                case 'ArrowLeft': step = -1; break;
+                case 'ArrowDown': step = 3; break;
+                case 'ArrowUp': step = -3; break;
+                default: return; // Ignore all other keys
+            }
+
+            e.preventDefault();
+
+            const active = document.activeElement as HTMLButtonElement;
+            let currentIndex = buttonsArray.indexOf(active);
+
+            // FOCUS RECOVERY: If focus dropped to body (-1), resume from ghost memory
+            if (currentIndex === -1) {
+                currentIndex = lastInteractionRef.current;
+            }
+
+            let targetIndex = currentIndex;
+            let nextIndex = currentIndex;
+
+            // Find the next available square in the requested direction
+            while (step !== 0) {
+                nextIndex = (nextIndex + step + 9) % 9;
+                if (nextIndex === currentIndex) break;
+
+                if (!buttonsArray[nextIndex].disabled) {
+                    targetIndex = nextIndex;
+                    break;
+                }
+            }
+
+            // Fallback: If calculation lands on a disabled square somehow, find any open square
+            if (buttonsArray[targetIndex]?.disabled) {
+                targetIndex = buttonsArray.findIndex(b => !b.disabled);
+            }
+
+            // Apply the focus and save location
+            if (targetIndex !== -1) {
+                buttonsArray[targetIndex]?.focus();
+                lastInteractionRef.current = targetIndex;
             }
         };
 
@@ -353,7 +365,6 @@ export const TicTacToe: React.FC = () => {
                 {/* GAME GRID */}
                 <main
                     ref={gridRef}
-                    onKeyDown={handleGridKeyDown}
                     className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl p-3 shadow-2xl w-full focus-visible:outline-hidden`}
                 >
                     {board.map((cell, i) => (
@@ -368,6 +379,9 @@ export const TicTacToe: React.FC = () => {
 
                                 setBoard((prev) => applyMove(prev, i, PLAYERS.X));
                                 setIsXNext(false);
+
+                                // ✅ ADD THIS LINE so the global listener knows where to resume
+                                lastInteractionRef.current = i;
                             }}
                         />
                     ))}
@@ -382,9 +396,22 @@ export const TicTacToe: React.FC = () => {
                         setIsXNext(true);
                         setIsAiThinking(false);
                     }}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-(--btn-bg) py-2.5 text-xs font-black tracking-widest text-(--btn-text) shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer uppercase"
+                    className={`group flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-black tracking-widest uppercase transition-all duration-300 cursor-pointer outline-hidden border
+                        ${!!winner
+                            ? 'bg-(--text-main) text-(--bg-main) border-transparent shadow-lg scale-100'
+                            : 'bg-(--primary)/10 text-(--primary) border-(--primary)/20 hover:bg-(--primary)/20 hover:border-(--primary)/40'
+                        }
+                        focus-visible:ring-2 ${!!winner ? 'focus-visible:ring-(--primary) focus-visible:ring-offset-4 focus-visible:ring-offset-(--bg-main)' : 'focus-visible:ring-(--primary)/50'}`}
                 >
-                    <RotateCcw size={14} strokeWidth={2.5} />
+                    {/* Full counter-clockwise 360 spin so the icon never stops upside down */}
+                    <div className={`transition-transform duration-700 ease-out 
+                        ${!!winner
+                            ? '-rotate-360'
+                            : 'group-hover:-rotate-360 group-focus-visible:-rotate-360'
+                        }`}
+                    >
+                        <RotateCcw size={14} strokeWidth={2.5} />
+                    </div>
                     Rematch
                 </button>
 
