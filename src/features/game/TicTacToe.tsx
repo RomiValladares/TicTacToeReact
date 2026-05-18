@@ -146,6 +146,11 @@ const GameStatus = ({
 
 export const TicTacToe: React.FC = () => {
     const [theme, setTheme] = useState<ThemeId>('neon');
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+    }, [theme]);
+
     const [board, setBoard] = useState<Board>(createEmptyBoard());
     const [isXNext, setIsXNext] = useState(true);
     const [isAiThinking, setIsAiThinking] = useState(false);
@@ -195,14 +200,23 @@ export const TicTacToe: React.FC = () => {
 
     return (
         <div
-            data-theme={theme}
-            className="relative flex min-h-screen flex-col items-center overflow-hidden bg-(--bg-main) p-6 font-sans text-(--text-main) transition-colors duration-500 justify-center"
+            // data-theme={theme}
+            className="relative flex min-h-screen flex-col items-center overflow-hidden bg-(--bg-main) p-6 font-sans text-(--text-main) justify-center"
         >
             <BackgroundAtmosphere />
 
-            {/* Adjusted max-w constraints to scale smoothly from mobile up to desktop viewports */}
-            <div className="relative z-10 flex w-full max-w-xs sm:max-w-sm md:max-w-md flex-col gap-4 items-center transition-all duration-300">
-
+            <motion.div
+                initial={{ opacity: 0, y: 25, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{
+                    type: 'spring',
+                    stiffness: 160,
+                    damping: 16,
+                    mass: 0.9,
+                    delay: 0.15
+                }}
+                className="relative z-10 flex w-full max-w-xs sm:max-w-sm md:max-w-md flex-col gap-4 items-center"
+            >
                 {/* HEADER */}
                 <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
                     <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-2xl font-black tracking-tighter text-transparent select-none">
@@ -294,7 +308,7 @@ export const TicTacToe: React.FC = () => {
                         );
                     })}
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 };

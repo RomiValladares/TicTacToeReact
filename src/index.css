@@ -60,24 +60,32 @@
   --blob-c-alpha: 0.72;
 }
 
+html,
+body {
+  background-color: var(--bg-main);
+}
+
 body {
   margin: 0;
-  background-color: var(--bg-main);
 }
 
 @keyframes liquid-drift-a {
   0% {
     transform: translate(0%, 0%) scale(1) rotate(0deg);
   }
+
   22% {
     transform: translate(14%, -18%) scale(1.14) rotate(4deg);
   }
+
   48% {
     transform: translate(-11%, 9%) scale(0.88) rotate(-3deg);
   }
+
   71% {
     transform: translate(19%, 16%) scale(1.06) rotate(2deg);
   }
+
   100% {
     transform: translate(0%, 0%) scale(1) rotate(0deg);
   }
@@ -87,18 +95,23 @@ body {
   0% {
     transform: translate(0%, 0%) scale(1.08) rotate(0deg);
   }
+
   18% {
     transform: translate(-20%, 11%) scale(0.9) rotate(-5deg);
   }
+
   41% {
     transform: translate(8%, -24%) scale(1.18) rotate(3deg);
   }
+
   63% {
     transform: translate(-14%, -7%) scale(0.95) rotate(-2deg);
   }
+
   86% {
     transform: translate(12%, 20%) scale(1.04) rotate(4deg);
   }
+
   100% {
     transform: translate(0%, 0%) scale(1.08) rotate(0deg);
   }
@@ -108,15 +121,19 @@ body {
   0% {
     transform: translate(0%, 0%) scale(0.96) rotate(0deg);
   }
+
   27% {
     transform: translate(-16%, -14%) scale(1.12) rotate(-4deg);
   }
+
   52% {
     transform: translate(22%, 6%) scale(0.86) rotate(5deg);
   }
+
   74% {
     transform: translate(-9%, 19%) scale(1.1) rotate(-2deg);
   }
+
   100% {
     transform: translate(0%, 0%) scale(0.96) rotate(0deg);
   }
