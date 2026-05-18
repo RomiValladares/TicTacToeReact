@@ -15,6 +15,24 @@ import {
 } from '../../core/gameLogic';
 import { BackgroundAtmosphere } from './components/BackgroundAtmosphere';
 
+const safeStorage = {
+    getItem: (key: string, fallback: string): string => {
+        try {
+            return localStorage.getItem(key) || fallback;
+        } catch (e) {
+            return fallback; // Graceful degradation if cookies/storage are blocked
+        }
+    },
+    setItem: (key: string, value: string): void => {
+        try {
+            localStorage.setItem(key, value);
+        } catch (e) {
+            // Silently fail so the app keeps running smoothly
+            console.warn(`Storage write blocked for key "${key}":`, e);
+        }
+    }
+};
+
 type ThemeId = 'neon' | 'sunset' | 'classic';
 
 const THEME_IDS: ThemeId[] = ['neon', 'sunset', 'classic'];
@@ -145,18 +163,39 @@ const GameStatus = ({
 };
 
 export const TicTacToe: React.FC = () => {
-    const [theme, setTheme] = useState<ThemeId>('neon');
+    const [theme, setTheme] = useState<ThemeId>(() => {
+        return safeStorage.getItem('tictactoe-theme', 'neon') as ThemeId;
+    });
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
     }, [theme]);
 
+    const [difficulty, setDifficulty] = useState<Difficulty>(() => {
+        return safeStorage.getItem('tictactoe-difficulty', 'unbeatable') as Difficulty;
+    });
+
+    const [isSoundOn, setIsSoundOn] = useState<boolean>(() => {
+        return safeStorage.getItem('tictactoe-sound', 'true') !== 'false';
+    });
+    
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        safeStorage.setItem('tictactoe-theme', theme);
+    }, [theme]);
+
+    useEffect(() => {
+        safeStorage.setItem('tictactoe-difficulty', difficulty);
+    }, [difficulty]);
+
+    useEffect(() => {
+        safeStorage.setItem('tictactoe-sound', String(isSoundOn));
+    }, [isSoundOn]);
+
     const [board, setBoard] = useState<Board>(createEmptyBoard());
     const [isXNext, setIsXNext] = useState(true);
     const [isAiThinking, setIsAiThinking] = useState(false);
     const [scores, setScores] = useState({ X: 0, O: 0, draws: 0 });
-    const [difficulty, setDifficulty] = useState<Difficulty>('unbeatable');
-    const [isSoundOn, setIsSoundOn] = useState<boolean>(true);
 
     const winner = getWinner(board);
     const winLine = getWinningLine(board);
