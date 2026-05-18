@@ -2,7 +2,7 @@
 
 This document serves as a technical audit trail for the development of the Tic-Tac-Toe app
 
-## Project Infrastructure
+## 1. Project Infrastructure
 **Goal:** Establish a modern React/TypeScript environment.
 
 ### Prompt:
@@ -15,7 +15,7 @@ This document serves as a technical audit trail for the development of the Tic-T
 
 ---
 
-## Core Engine & AI (Minimax)
+## 2. Core Engine & AI (Minimax)
 **Goal:** Implement optimal move calculation via Minimax.
 
 ### Prompt:
@@ -43,3 +43,12 @@ This document serves as a technical audit trail for the development of the Tic-T
 ### Architectural Decisions:
 - **Animation:** Switched from CSS Keyframes to Framer Motion
 - **Optimization:** Utilized `React.memo` to decouple background rendering from game logic re-renders.
+
+---
+
+## 5. Audio Synthesis & Web Audio API
+**Goal:** Implement a lightweight retro sound effects system.
+
+### Prompt:
+"Create a self-contained TypeScript utility using the browser's native Web Audio API to get a retro 8-bit game sounds without external asset files.
+- **Sounds:** Generate four distinct sound effects using oscillators and gain envelopes: 'clickX' (sharp upward blip), 'clickO' (lower response blip), 'win' (like an upward chord), and 'draw' (downward freq)."
