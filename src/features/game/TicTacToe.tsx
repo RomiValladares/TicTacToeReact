@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Circle, RotateCcw, Trophy, Volume2, VolumeX } from 'lucide-react';
+import { X, Circle, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { playSound } from './soundEffects';
+import { motion } from 'framer-motion';
 
 import {
     createEmptyBoard,
@@ -267,20 +268,30 @@ export const TicTacToe: React.FC = () => {
                 </div>
 
                 {/* DIFFICULTY SELECT */}
-                <div className="grid w-full grid-cols-3 p-1 bg-(--text-main)/5 rounded-xl border border-(--text-main)/10 text-center text-[10px] font-bold tracking-wider uppercase">
-                    {DIFFICULTY_LEVELS.map((level) => (
-                        <button
-                            key={level}
-                            type="button"
-                            onClick={() => setDifficulty(level)}
-                            className={`py-1.5 rounded-lg transition-all cursor-pointer ${difficulty === level
-                                ? 'bg-(--text-main)/10 text-(--text-main) font-black shadow-xs scale-[1.01]'
-                                : 'text-(--text-muted) hover:text-(--text-main)'
-                                }`}
-                        >
-                            {level}
-                        </button>
-                    ))}
+                <div className="grid w-full grid-cols-3 p-1 bg-(--text-main)/5 rounded-xl border border-(--text-main)/10 text-center text-[10px] font-bold tracking-wider uppercase overflow-hidden">
+                    {DIFFICULTY_LEVELS.map((level) => {
+                        const isActive = difficulty === level;
+                        return (
+                            <button
+                                key={level}
+                                type="button"
+                                onClick={() => setDifficulty(level)}
+                                className={`relative py-1.5 rounded-lg transition-colors duration-300 cursor-pointer ${isActive
+                                        ? 'text-(--text-main) font-black'
+                                        : 'text-(--text-muted) hover:text-(--text-main)'
+                                    }`}
+                            >
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="activeDifficultyIndicator"
+                                        className="absolute inset-0 bg-(--text-main)/10 dark:bg-(--text-main)/15 rounded-lg shadow-xs"
+                                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                                    />
+                                )}
+                                <span className="relative z-10">{level}</span>
+                            </button>
+                        );
+                    })}
                 </div>
 
             </div>
