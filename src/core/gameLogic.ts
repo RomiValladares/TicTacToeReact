@@ -11,7 +11,7 @@ export type PlayerMark = (typeof PLAYERS)[keyof typeof PLAYERS];
 export type Cell = PlayerMark | null;
 export type Board = readonly Cell[];
 
-export type DifficultyLevel = "Easy" | "Medium" | "Impossible";
+export type DifficultyLevel = 'Easy' | 'Medium' | 'Impossible';
 
 export function createEmptyBoard(): Board {
     return Array(9).fill(null);
@@ -146,7 +146,13 @@ export function getBestMove(board: Board, aiMark: PlayerMark, difficulty: Diffic
         if (board[i] === null) {
             const nextBoard = applyMove(board, i, aiMark);
             const score = minimax(nextBoard, 0, false, aiMark, humanMark);
-            if (score > bestScore) {
+
+            // Check if this specific cell intercepts an immediate human victory configuration
+            const blocksImmediateHumanWin = getWinner(applyMove(board, i, humanMark)) === humanMark;
+
+            // Update selection if a higher matrix score is found, OR if scores are tied 
+            // but this move performs a critical defensive block.
+            if (score > bestScore || (score === bestScore && blocksImmediateHumanWin && move === 0)) {
                 bestScore = score;
                 move = i;
             }
