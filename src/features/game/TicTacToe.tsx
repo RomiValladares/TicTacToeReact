@@ -175,18 +175,22 @@ export const TicTacToe: React.FC = () => {
         if (!isXNext && !winner) {
             setIsAiThinking(true);
             const timer = setTimeout(() => {
-                const aiMove = getBestMove(board, PLAYERS.O, 'Impossible');
+                const engineDifficulty =
+                    difficulty === 'unbeatable' ? 'Impossible' :
+                        difficulty === 'medium' ? 'Medium' : 'Easy';
+
+                const aiMove = getBestMove(board, PLAYERS.O, engineDifficulty);
+
                 if (aiMove !== null) {
                     setBoard((prev) => applyMove(prev, aiMove, PLAYERS.O));
                     if (isSoundOn) playSound('clickO');
-
                     setIsXNext(true);
                 }
                 setIsAiThinking(false);
             }, 600);
             return () => clearTimeout(timer);
         }
-    }, [isXNext, board, winner, isSoundOn]);
+    }, [isXNext, board, winner, isSoundOn, difficulty]);
 
     return (
         <div
