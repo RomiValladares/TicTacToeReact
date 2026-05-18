@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Circle, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { playSound } from './soundEffects';
 import { motion } from 'framer-motion';
@@ -81,6 +81,7 @@ const Square = ({ value, isWinning, isXNext, disabled, onClick }: SquareProps) =
         disabled={disabled}
         className={`
             group relative z-10 flex w-full aspect-square items-center justify-center rounded-3xl border transition-all duration-300
+            focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-(--primary) focus-visible:ring-offset-4 focus-visible:ring-offset-(--bg-main)
             ${isWinning
                 ? 'scale-105 bg-(--primary)/10 ring-4 ring-(--primary)/50'
                 : 'border-(--text-main)/10 bg-(--text-main)/5 hover:bg-(--text-main)/15'}
@@ -178,7 +179,7 @@ export const TicTacToe: React.FC = () => {
     const [isSoundOn, setIsSoundOn] = useState<boolean>(() => {
         return safeStorage.getItem('tictactoe-sound', 'true') !== 'false';
     });
-    
+
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
         safeStorage.setItem('tictactoe-theme', theme);
@@ -214,6 +215,9 @@ export const TicTacToe: React.FC = () => {
             if (winner === 'draw') return { ...s, draws: s.draws + 1 };
             return s;
         });
+
+        // Autofocus the Rematch button instantly when the game resolves
+        rematchBtnRef.current?.focus();
     }, [winner, isSoundOn]);
 
     useEffect(() => {
@@ -236,6 +240,71 @@ export const TicTacToe: React.FC = () => {
             return () => clearTimeout(timer);
         }
     }, [isXNext, board, winner, isSoundOn, difficulty]);
+
+
+    const gridRef = useRef<HTMLDivElement>(null);
+    const rematchBtnRef = useRef<HTMLButtonElement>(null);
+
+    const handleGridKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        const buttons = gridRef.current?.querySelectorAll<HTMLButtonElement>('button');
+        if (!buttons) return;
+
+        const active = document.activeElement as HTMLButtonElement;
+        const buttonsArray = Array.from(buttons);
+        const currentIndex = buttonsArray.indexOf(active);
+
+        if (currentIndex === -1) return;
+
+        let targetIndex = currentIndex;
+        let step = 0;
+
+        switch (e.key) {
+            case 'ArrowRight': step = 1; break;
+            case 'ArrowLeft': step = -1; break;
+            case 'ArrowDown': step = 3; break;
+            case 'ArrowUp': step = -3; break;
+            default: return;
+        }
+
+        e.preventDefault();
+
+        let nextIndex = currentIndex;
+        while (step !== 0) {
+            nextIndex = (nextIndex + step + 9) % 9;
+            if (nextIndex === currentIndex) break;
+
+            if (!buttonsArray[nextIndex].disabled) {
+                targetIndex = nextIndex;
+                break;
+            }
+        }
+
+        buttonsArray[targetIndex]?.focus();
+    };
+
+    // Global Hotkey Interceptor for instant 1-9 direct entry
+    useEffect(() => {
+        const handleGlobalKeyDown = (e: KeyboardEvent) => {
+            if (/^[1-9]$/.test(e.key)) {
+                const buttons = gridRef.current?.querySelectorAll<HTMLButtonElement>('button');
+                if (!buttons) return;
+
+                const buttonsArray = Array.from(buttons);
+                const targetIndex = parseInt(e.key, 10) - 1;
+                const targetButton = buttonsArray[targetIndex];
+
+                // If the target square exists and is open, play it immediately
+                if (targetButton && !targetButton.disabled) {
+                    e.preventDefault();
+                    targetButton.focus();
+                    targetButton.click();
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleGlobalKeyDown);
+        return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+    }, []);
 
     return (
         <div
@@ -282,7 +351,11 @@ export const TicTacToe: React.FC = () => {
                 <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
 
                 {/* GAME GRID */}
-                <main className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl p-3 shadow-2xl w-full`}>
+                <main
+                    ref={gridRef}
+                    onKeyDown={handleGridKeyDown}
+                    className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl p-3 shadow-2xl w-full focus-visible:outline-hidden`}
+                >
                     {board.map((cell, i) => (
                         <Square
                             key={i}
@@ -302,6 +375,7 @@ export const TicTacToe: React.FC = () => {
 
                 {/* REMATCH */}
                 <button
+                    ref={rematchBtnRef}
                     type="button"
                     onClick={() => {
                         setBoard(createEmptyBoard());
