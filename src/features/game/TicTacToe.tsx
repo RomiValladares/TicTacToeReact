@@ -200,7 +200,8 @@ export const TicTacToe: React.FC = () => {
         >
             <BackgroundAtmosphere />
 
-            <div className="relative z-10 flex w-full max-w-xs flex-col gap-4 items-center">
+            {/* Adjusted max-w constraints to scale smoothly from mobile up to desktop viewports */}
+            <div className="relative z-10 flex w-full max-w-xs sm:max-w-sm md:max-w-md flex-col gap-4 items-center transition-all duration-300">
 
                 {/* HEADER */}
                 <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
