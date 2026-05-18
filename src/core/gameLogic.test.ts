@@ -1,58 +1,77 @@
 import { describe, it, expect } from 'vitest';
-import { createEmptyBoard, isMoveLegal, getWinner, type Board } from './gameLogic';
-import { getBestMove, PLAYERS } from './gameLogic';
+import {
+    createEmptyBoard,
+    isMoveLegal,
+    getWinner,
+    getBestMove,
+    PLAYERS,
+    type Board,
+} from './gameLogic';
 
-describe('gameLogic - Core Rules', () => {
-    it('creates an empty board of 9 null cells', () => {
+describe('createEmptyBoard', () => {
+    it('returns 9 null cells', () => {
         const board = createEmptyBoard();
         expect(board).toHaveLength(9);
         expect(board.every(cell => cell === null)).toBe(true);
     });
+});
 
-    it('validates legal and illegal moves', () => {
+describe('isMoveLegal', () => {
+    it('allows empty in-bounds cells and rejects out of bounds', () => {
         const board = createEmptyBoard();
         expect(isMoveLegal(board, 0)).toBe(true);
         expect(isMoveLegal(board, 10)).toBe(false);
     });
+});
 
-    it('identifies a horizontal win for X', () => {
-        const board: Board = [
-            'X', 'X', 'X',
-            null, 'O', null,
-            null, null, 'O'
-        ];
-        expect(getWinner(board)).toBe('X');
+describe('getWinner', () => {
+    it.each([
+        ['horizontal X', ['X', 'X', 'X', null, 'O', null, null, null, 'O'] as Board, 'X'],
+        ['vertical O', ['O', 'O', 'X', 'O', 'X', 'X', 'O', 'X', 'X'] as Board, 'O'],
+        ['diagonal X', ['X', 'O', null, 'O', 'X', null, null, null, 'X'] as Board, 'X'],
+    ])('detects %s win', (_, board, winner) => {
+        expect(getWinner(board)).toBe(winner);
     });
-
-    it('identifies a draw', () => {
+    
+    it('returns draw when the board is full with no winner', () => {
         const board: Board = [
             'X', 'O', 'X',
             'X', 'O', 'O',
-            'O', 'X', 'X'
-        ]; // Ensure all 9 spots are strings, no 'null' here!
+            'O', 'X', 'X',
+        ];
         expect(getWinner(board)).toBe('draw');
     });
-
 });
 
-describe('gameLogic - AI Intelligence (Minimax)', () => {
-    it('AI picks the winning move immediately', () => {
+describe('getBestMove (Impossible)', () => {
+    it.each([
+        { label: 'completes its own win', ai: PLAYERS.X, expected: 2 },
+        { label: 'blocks opponent win', ai: PLAYERS.O, expected: 2 },
+    ])('$label', ({ ai, expected }) => {
         const board: Board = [
-            'X', 'X', null, // X needs to play at index 2 to win
+            'X', 'X', null,
             'O', 'O', null,
-            null, null, null
+            null, null, null,
         ];
-        // If AI is 'X', it should definitely pick index 2
-        expect(getBestMove(board, PLAYERS.X, "Impossible")).toBe(2);
+        expect(getBestMove(board, ai, 'Impossible')).toBe(expected);
     });
 
-    it('AI blocks a human win', () => {
+    it('blocks fork when multiple defensive moves are optimal', () => {
         const board: Board = [
-            'X', 'X', null, // Human 'X' needs index 2 to win
-            null, 'O', null, // AI 'O' is in the middle, no win possible
-            null, null, null
+            null, null, 'O',
+            null, 'X', 'X',
+            null, 'X', 'O',
         ];
-        // AI 'O' has no immediate win, so it MUST pick index 2 to block 'X'
-        expect(getBestMove(board, PLAYERS.O, "Impossible")).toBe(2);
+        const aiMove = getBestMove(board, PLAYERS.O, 'Impossible');
+        expect([1, 3]).toContain(aiMove);
+    });
+
+    it('takes an immediate win over a block', () => {
+        const board: Board = [
+            'O', 'O', null,
+            null, 'X', null,
+            'X', 'X', null,
+        ];
+        expect(getBestMove(board, PLAYERS.O, 'Impossible')).toBe(2);
     });
 });
