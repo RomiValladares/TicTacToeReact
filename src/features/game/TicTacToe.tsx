@@ -11,6 +11,7 @@ import { THEME_IDS, DIFFICULTY_LEVELS, surfaceMuted } from './constants';
 import { usePersistedSettings } from './hooks/usePersistedSettings';
 import { useGameSession } from './hooks/useGameSession';
 import { useGridKeyboard } from './hooks/useGridKeyboard';
+import { useStableViewportHeight } from './hooks/useStableViewportHeight';
 
 export const TicTacToe: React.FC = () => {
     const {
@@ -24,6 +25,7 @@ export const TicTacToe: React.FC = () => {
         dismissTooltip,
     } = usePersistedSettings();
 
+    const stableViewportHeight = useStableViewportHeight();
     const squareRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
     const { setSquareRef, recordInteraction } = useGridKeyboard({
@@ -71,7 +73,10 @@ export const TicTacToe: React.FC = () => {
     }, [showTooltip, dismissTooltip]);
 
     return (
-        <div className="fixed inset-0 flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-(--bg-main) p-4 font-sans text-(--text-main)">
+        <div
+            className="fixed inset-x-0 top-0 z-0 flex w-full flex-col items-center justify-center overflow-hidden bg-(--bg-main) p-4 font-sans text-(--text-main)"
+            style={{ height: stableViewportHeight }}
+        >
             <BackgroundAtmosphere />
 
             <motion.div
