@@ -42,6 +42,7 @@ export const Square = forwardRef<HTMLButtonElement, SquareProps>(
                     )}
                 </div>
             )}
+            {!value && disabled && <div aria-hidden className="h-[45%] w-[45%]" />}
         </button>
     ),
 );
