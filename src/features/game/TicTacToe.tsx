@@ -127,7 +127,7 @@ export const TicTacToe: React.FC = () => {
                         </motion.div>
                     )}
                     <main
-                        className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl border-2 border-green-500 p-3 shadow-2xl w-full focus-visible:outline-hidden`}
+                        className={`${surfaceMuted} grid aspect-square grid-cols-3 gap-3 rounded-3xl border-2 border-green-500 p-3 shadow-2xl w-full focus-visible:outline-hidden`}
                     >
                         {board.map((cell, i) => (
                             <Square
