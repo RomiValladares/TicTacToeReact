@@ -11,7 +11,6 @@ import { THEME_IDS, DIFFICULTY_LEVELS, surfaceMuted } from './constants';
 import { usePersistedSettings } from './hooks/usePersistedSettings';
 import { useGameSession } from './hooks/useGameSession';
 import { useGridKeyboard } from './hooks/useGridKeyboard';
-import { useStableViewportHeight } from './hooks/useStableViewportHeight';
 
 export const TicTacToe: React.FC = () => {
     const {
@@ -25,7 +24,6 @@ export const TicTacToe: React.FC = () => {
         dismissTooltip,
     } = usePersistedSettings();
 
-    const stableViewportHeight = useStableViewportHeight();
     const squareRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
     const { setSquareRef, recordInteraction } = useGridKeyboard({
@@ -73,13 +71,7 @@ export const TicTacToe: React.FC = () => {
     }, [showTooltip, dismissTooltip]);
 
     return (
-        <div
-            className="fixed inset-x-0 top-0 z-0 flex w-full flex-col items-center justify-center overflow-hidden border-2 border-red-500 bg-(--bg-main) p-4 font-sans text-(--text-main)"
-            style={{ height: stableViewportHeight }}
-        >
-            <div className="fixed top-0 left-0 z-[9999] w-full bg-pink-500 p-4 text-center text-3xl font-black text-white">
-                VERSION: CACHE BUSTER 1.0
-            </div>
+        <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-(--bg-main) p-6 font-sans text-(--text-main)">
             <BackgroundAtmosphere />
 
             <motion.div
@@ -92,7 +84,7 @@ export const TicTacToe: React.FC = () => {
                     mass: 0.9,
                     delay: 0.15,
                 }}
-                className="relative z-10 flex w-[92%] max-w-[420px] flex-col items-center gap-4 border-2 border-blue-500"
+                className="relative z-10 flex w-full max-w-xs flex-col items-center gap-4 sm:max-w-sm md:max-w-md"
             >
                 <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
                     <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-2xl font-black tracking-tighter text-transparent select-none">
@@ -107,7 +99,7 @@ export const TicTacToe: React.FC = () => {
                         <button
                             type="button"
                             onClick={() => setIsSoundOn(!isSoundOn)}
-                            className="p-1 text-(--text-muted) hover:text-(--primary) transition-colors cursor-pointer"
+                            className="cursor-pointer p-1 text-(--text-muted) transition-colors hover:text-(--primary)"
                             title={isSoundOn ? 'Mute Sound' : 'Unmute Sound'}
                         >
                             {isSoundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
@@ -115,11 +107,9 @@ export const TicTacToe: React.FC = () => {
                     </div>
                 </header>
 
-                <div className="flex h-8 w-full shrink-0 items-center justify-center">
-                    <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
-                </div>
+                <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
 
-                <div className="relative shrink-0">
+                <div className="relative w-full">
                     {showTooltip && (
                         <motion.div
                             initial={{ opacity: 0, y: 10, scale: 0.9 }}
@@ -132,7 +122,7 @@ export const TicTacToe: React.FC = () => {
                         </motion.div>
                     )}
                     <main
-                        className={`${surfaceMuted} grid grid-cols-3 gap-2 h-[320px] w-[320px] shrink-0 rounded-3xl border-2 border-green-500 p-3 shadow-2xl focus-visible:outline-hidden`}
+                        className={`${surfaceMuted} grid aspect-square w-full grid-cols-3 gap-3 rounded-3xl p-3 shadow-2xl focus-visible:outline-hidden`}
                     >
                         {board.map((cell, i) => (
                             <Square
@@ -152,15 +142,15 @@ export const TicTacToe: React.FC = () => {
                     ref={rematchBtnRef}
                     type="button"
                     onClick={rematch}
-                    className={`group flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-black tracking-widest uppercase transition-all duration-300 cursor-pointer outline-hidden border
+                    className={`group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border py-2.5 text-xs font-black tracking-widest uppercase outline-hidden transition-all duration-300
                         ${winner
-                            ? 'bg-(--text-main) text-(--bg-main) border-transparent shadow-lg scale-100'
-                            : 'bg-(--primary)/10 text-(--primary) border-(--primary)/20 hover:bg-(--primary)/20 hover:border-(--primary)/40'
+                            ? 'scale-100 border-transparent bg-(--text-main) text-(--bg-main) shadow-lg'
+                            : 'border-(--primary)/20 bg-(--primary)/10 text-(--primary) hover:border-(--primary)/40 hover:bg-(--primary)/20'
                         }
                         focus-visible:ring-2 ${winner ? 'focus-visible:ring-(--primary) focus-visible:ring-offset-4 focus-visible:ring-offset-(--bg-main)' : 'focus-visible:ring-(--primary)/50'}`}
                 >
                     <div
-                        className={`transition-transform duration-700 ease-out 
+                        className={`transition-transform duration-700 ease-out
                         ${winner
                                 ? '-rotate-360'
                                 : 'group-hover:-rotate-360 group-focus-visible:-rotate-360'
@@ -171,8 +161,8 @@ export const TicTacToe: React.FC = () => {
                     Rematch
                 </button>
 
-                <div className="relative h-[88px] w-full shrink-0">
-                    <div className={`${surfaceMuted} grid h-[88px] w-full grid-cols-3 rounded-2xl p-3 pb-5 shadow-sm`}>
+                <div className="relative mt-1 mb-2 w-full">
+                    <div className={`${surfaceMuted} grid w-full grid-cols-3 rounded-2xl p-3 pb-5 shadow-sm`}>
                         <ScoreCard label="Player" score={scores.X} colorClass="text-(--primary)" />
                         <ScoreCard label="Draws" score={scores.draws} colorClass="text-(--text-main)" />
                         <ScoreCard label="AI" score={scores.O} colorClass="text-(--secondary)" isLast />
@@ -187,7 +177,7 @@ export const TicTacToe: React.FC = () => {
                     </button>
                 </div>
 
-                <div className="grid w-full shrink-0 grid-cols-3 overflow-hidden rounded-xl border border-(--text-main)/10 bg-(--text-main)/5 p-1 text-center text-[10px] font-bold tracking-wider uppercase">
+                <div className="grid w-full grid-cols-3 overflow-hidden rounded-xl border border-(--text-main)/10 bg-(--text-main)/5 p-1 text-center text-[10px] font-bold tracking-wider uppercase">
                     {DIFFICULTY_LEVELS.map((level) => {
                         const isActive = difficulty === level;
                         return (
@@ -195,15 +185,15 @@ export const TicTacToe: React.FC = () => {
                                 key={level}
                                 type="button"
                                 onClick={() => setDifficulty(level)}
-                                className={`relative py-1.5 rounded-lg transition-colors duration-300 cursor-pointer ${isActive
-                                    ? 'text-(--text-main) font-black'
+                                className={`relative cursor-pointer rounded-lg py-1.5 transition-colors duration-300 ${isActive
+                                    ? 'font-black text-(--text-main)'
                                     : 'text-(--text-muted) hover:text-(--text-main)'
                                     }`}
                             >
                                 {isActive && (
                                     <motion.div
                                         layoutId="activeDifficultyIndicator"
-                                        className="absolute inset-0 bg-(--text-main)/10 dark:bg-(--text-main)/15 rounded-lg shadow-xs"
+                                        className="absolute inset-0 rounded-lg bg-(--text-main)/10 shadow-xs dark:bg-(--text-main)/15"
                                         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                                     />
                                 )}
