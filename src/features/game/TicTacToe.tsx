@@ -74,7 +74,7 @@ export const TicTacToe: React.FC = () => {
 
     return (
         <div
-            className="fixed inset-x-0 top-0 z-0 flex w-full flex-col items-center justify-center overflow-hidden bg-(--bg-main) p-4 font-sans text-(--text-main)"
+            className="fixed inset-x-0 top-0 z-0 flex w-full flex-col items-center justify-center overflow-hidden border-2 border-red-500 bg-(--bg-main) p-4 font-sans text-(--text-main)"
             style={{ height: stableViewportHeight }}
         >
             <BackgroundAtmosphere />
@@ -89,7 +89,7 @@ export const TicTacToe: React.FC = () => {
                     mass: 0.9,
                     delay: 0.15,
                 }}
-                className="relative z-10 flex w-[92%] max-w-[420px] flex-col items-center gap-4"
+                className="relative z-10 flex w-[92%] max-w-[420px] flex-col items-center gap-4 border-2 border-blue-500"
             >
                 <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
                     <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-2xl font-black tracking-tighter text-transparent select-none">
@@ -127,7 +127,7 @@ export const TicTacToe: React.FC = () => {
                         </motion.div>
                     )}
                     <main
-                        className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl p-3 shadow-2xl w-full focus-visible:outline-hidden`}
+                        className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl border-2 border-green-500 p-3 shadow-2xl w-full focus-visible:outline-hidden`}
                     >
                         {board.map((cell, i) => (
                             <Square
