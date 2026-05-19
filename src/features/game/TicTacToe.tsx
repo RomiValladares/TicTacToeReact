@@ -71,7 +71,7 @@ export const TicTacToe: React.FC = () => {
     }, [showTooltip, dismissTooltip]);
 
     return (
-        <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-(--bg-main) p-6 font-sans text-(--text-main)">
+        <div className="relative flex min-h-[100dvh] h-[100dvh] max-h-[100dvh] flex-col items-center overflow-hidden bg-(--bg-main) p-4 font-sans text-(--text-main) md:min-h-screen md:h-auto md:max-h-none md:justify-center md:p-6">
             <BackgroundAtmosphere />
 
             <motion.div
@@ -84,9 +84,9 @@ export const TicTacToe: React.FC = () => {
                     mass: 0.9,
                     delay: 0.15,
                 }}
-                className="relative z-10 flex w-full max-w-xs flex-col items-center gap-4 sm:max-w-sm md:max-w-md"
+                className="relative z-10 flex w-full max-w-xs flex-col items-center gap-2 sm:max-w-sm md:gap-4 md:max-w-md"
             >
-                <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
+                <header className="flex w-full shrink-0 items-center justify-between border-b border-(--text-main)/10 pb-3">
                     <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-2xl font-black tracking-tighter text-transparent select-none">
                         TIC TAC TOE
                     </h1>
@@ -107,9 +107,11 @@ export const TicTacToe: React.FC = () => {
                     </div>
                 </header>
 
-                <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
+                <div className="shrink-0">
+                    <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
+                </div>
 
-                <div className="relative w-full">
+                <div className="relative mx-auto w-full max-w-[min(100%,calc(100dvh-280px))] md:max-w-none">
                     {showTooltip && (
                         <motion.div
                             initial={{ opacity: 0, y: 10, scale: 0.9 }}
@@ -142,7 +144,7 @@ export const TicTacToe: React.FC = () => {
                     ref={rematchBtnRef}
                     type="button"
                     onClick={rematch}
-                    className={`group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border py-2.5 text-xs font-black tracking-widest uppercase outline-hidden transition-all duration-300
+                    className={`group flex w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border py-2.5 text-xs font-black tracking-widest uppercase outline-hidden transition-all duration-300
                         ${winner
                             ? 'scale-100 border-transparent bg-(--text-main) text-(--bg-main) shadow-lg'
                             : 'border-(--primary)/20 bg-(--primary)/10 text-(--primary) hover:border-(--primary)/40 hover:bg-(--primary)/20'
@@ -161,7 +163,7 @@ export const TicTacToe: React.FC = () => {
                     Rematch
                 </button>
 
-                <div className="relative mt-1 mb-2 w-full">
+                <div className="relative mt-1 mb-2 w-full shrink-0">
                     <div className={`${surfaceMuted} grid w-full grid-cols-3 rounded-2xl p-3 pb-5 shadow-sm`}>
                         <ScoreCard label="Player" score={scores.X} colorClass="text-(--primary)" />
                         <ScoreCard label="Draws" score={scores.draws} colorClass="text-(--text-main)" />
@@ -177,7 +179,7 @@ export const TicTacToe: React.FC = () => {
                     </button>
                 </div>
 
-                <div className="grid w-full grid-cols-3 overflow-hidden rounded-xl border border-(--text-main)/10 bg-(--text-main)/5 p-1 text-center text-[10px] font-bold tracking-wider uppercase">
+                <div className="grid w-full shrink-0 grid-cols-3 overflow-hidden rounded-xl border border-(--text-main)/10 bg-(--text-main)/5 p-1 text-center text-[10px] font-bold tracking-wider uppercase">
                     {DIFFICULTY_LEVELS.map((level) => {
                         const isActive = difficulty === level;
                         return (
