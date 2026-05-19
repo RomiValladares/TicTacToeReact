@@ -121,16 +121,13 @@ export function getBestMove(board: Board, aiMark: PlayerMark, difficulty: Diffic
     const emptyIndices = board
         .map((cell, index) => (cell === null ? index : null))
         .filter((index) => index !== null) as number[];
-
     // No moves left
     if (emptyIndices.length === 0) return null;
-
     if (difficulty === "Easy") {
         // just picks a random empty square
         const randomIndex = Math.floor(Math.random() * emptyIndices.length);
         return emptyIndices[randomIndex];
     }
-
     if (difficulty === "Medium") {
         // 30% chance to be lazy
         if (Math.random() < 0.3) {
@@ -138,27 +135,28 @@ export function getBestMove(board: Board, aiMark: PlayerMark, difficulty: Diffic
             return emptyIndices[randomIndex];
         }
     }
-
     const humanMark: PlayerMark = aiMark === PLAYERS.X ? PLAYERS.O : PLAYERS.X;
+    for (let i = 0; i < 9; i++) {
+        if (board[i] === null && getWinner(applyMove(board, i, aiMark)) === aiMark) {
+            return i;
+        }
+    }
+    for (let i = 0; i < 9; i++) {
+        if (board[i] === null && getWinner(applyMove(board, i, humanMark)) === humanMark) {
+            return i;
+        }
+    }
     let bestScore = -Infinity;
     let move: number | null = null;
-
     for (let i = 0; i < 9; i++) {
         if (board[i] === null) {
             const nextBoard = applyMove(board, i, aiMark);
             const score = minimax(nextBoard, 0, false, aiMark, humanMark);
-
-            // Check if this specific cell intercepts an immediate human victory configuration
-            const blocksImmediateHumanWin = getWinner(applyMove(board, i, humanMark)) === humanMark;
-
-            // Update selection if a higher matrix score is found, OR if scores are tied 
-            // but this move performs a critical defensive block.
-            if (score > bestScore || (score === bestScore && blocksImmediateHumanWin && move === 0)) {
+            if (score > bestScore) {
                 bestScore = score;
                 move = i;
             }
         }
     }
-
     return move;
 }

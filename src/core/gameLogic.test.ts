@@ -54,16 +54,31 @@ describe('getWinner', () => {
 });
 
 describe('getBestMove (Impossible)', () => {
-    it.each([
-        { label: 'completes its own win', ai: PLAYERS.X, expected: 2 },
-        { label: 'blocks opponent win', ai: PLAYERS.O, expected: 2 },
-    ])('$label', ({ ai, expected }) => {
+    it('completes its own win', () => {
         const board: Board = [
             'X', 'X', null,
             'O', 'O', null,
             null, null, null,
         ];
-        expect(getBestMove(board, ai, 'Impossible')).toBe(expected);
+        expect(getBestMove(board, PLAYERS.X, 'Impossible')).toBe(2);
+    });
+
+    it('blocks opponent win', () => {
+        const board: Board = [
+            'X', 'X', null,
+            'O', null, null,
+            null, null, null,
+        ];
+        expect(getBestMove(board, PLAYERS.O, 'Impossible')).toBe(2);
+    });
+
+    it('wins immediately when a win is available', () => {
+        const board: Board = [
+            'X', 'X', null,
+            'O', 'O', null,
+            null, null, null,
+        ];
+        expect(getBestMove(board, PLAYERS.O, 'Impossible')).toBe(5);
     });
 
     it('blocks fork when multiple defensive moves are optimal', () => {
