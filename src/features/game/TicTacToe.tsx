@@ -115,9 +115,11 @@ export const TicTacToe: React.FC = () => {
                     </div>
                 </header>
 
-                <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
+                <div className="flex h-8 w-full shrink-0 items-center justify-center">
+                    <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
+                </div>
 
-                <div className="relative w-full">
+                <div className="relative shrink-0">
                     {showTooltip && (
                         <motion.div
                             initial={{ opacity: 0, y: 10, scale: 0.9 }}
@@ -130,7 +132,7 @@ export const TicTacToe: React.FC = () => {
                         </motion.div>
                     )}
                     <main
-                        className={`${surfaceMuted} grid aspect-square grid-cols-3 gap-3 rounded-3xl border-2 border-green-500 p-3 shadow-2xl w-full focus-visible:outline-hidden`}
+                        className={`${surfaceMuted} grid grid-cols-3 gap-2 h-[320px] w-[320px] shrink-0 rounded-3xl border-2 border-green-500 p-3 shadow-2xl focus-visible:outline-hidden`}
                     >
                         {board.map((cell, i) => (
                             <Square
@@ -169,8 +171,8 @@ export const TicTacToe: React.FC = () => {
                     Rematch
                 </button>
 
-                <div className="relative w-full mb-2 mt-1">
-                    <div className={`${surfaceMuted} grid w-full grid-cols-3 rounded-2xl p-3 pb-5 shadow-sm`}>
+                <div className="relative h-[88px] w-full shrink-0">
+                    <div className={`${surfaceMuted} grid h-[88px] w-full grid-cols-3 rounded-2xl p-3 pb-5 shadow-sm`}>
                         <ScoreCard label="Player" score={scores.X} colorClass="text-(--primary)" />
                         <ScoreCard label="Draws" score={scores.draws} colorClass="text-(--text-main)" />
                         <ScoreCard label="AI" score={scores.O} colorClass="text-(--secondary)" isLast />
@@ -179,13 +181,13 @@ export const TicTacToe: React.FC = () => {
                     <button
                         type="button"
                         onClick={resetAll}
-                        className="absolute -bottom-2.5 left-1/2 flex -translate-x-1/2 items-center justify-center rounded-full border border-(--text-main)/10 bg-(--text-main)/10 px-4 py-1 text-[9px] font-black uppercase tracking-widest text-(--text-main) shadow-sm backdrop-blur-md transition-all hover:border-(--text-main)/30 hover:bg-(--text-main)/20 cursor-pointer z-10"
+                        className="absolute -bottom-2.5 left-1/2 z-10 flex -translate-x-1/2 cursor-pointer items-center justify-center rounded-full border border-(--text-main)/10 bg-(--text-main)/10 px-4 py-1 text-[9px] font-black uppercase tracking-widest text-(--text-main) shadow-sm backdrop-blur-md transition-all hover:border-(--text-main)/30 hover:bg-(--text-main)/20"
                     >
                         Reset
                     </button>
                 </div>
 
-                <div className="grid w-full grid-cols-3 p-1 bg-(--text-main)/5 rounded-xl border border-(--text-main)/10 text-center text-[10px] font-bold tracking-wider uppercase overflow-hidden">
+                <div className="grid w-full shrink-0 grid-cols-3 overflow-hidden rounded-xl border border-(--text-main)/10 bg-(--text-main)/5 p-1 text-center text-[10px] font-bold tracking-wider uppercase">
                     {DIFFICULTY_LEVELS.map((level) => {
                         const isActive = difficulty === level;
                         return (

@@ -18,7 +18,7 @@ export const Square = forwardRef<HTMLButtonElement, SquareProps>(
             onClick={onClick}
             disabled={disabled}
             className={`
-            group relative z-10 flex w-full aspect-square items-center justify-center rounded-3xl border border-yellow-500 border-2 bg-(--text-main)/5 transition-colors duration-300
+            group relative z-10 flex w-full aspect-square appearance-none items-center justify-center rounded-3xl border border-yellow-500 border-2 bg-(--text-main)/5 transition-colors duration-300
             ring-4 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-(--primary) focus-visible:ring-offset-4 focus-visible:ring-offset-(--bg-main)
             disabled:cursor-not-allowed
             ${isWinning
