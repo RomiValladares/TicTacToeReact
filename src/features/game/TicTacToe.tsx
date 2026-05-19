@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -51,8 +51,27 @@ export const TicTacToe: React.FC = () => {
         },
     });
 
+    useEffect(() => {
+        if (!showTooltip) return;
+
+        const timeoutId = window.setTimeout(dismissTooltip, 4000);
+
+        const dismissOnInteraction = () => dismissTooltip();
+
+        window.addEventListener('click', dismissOnInteraction);
+        window.addEventListener('keydown', dismissOnInteraction);
+        window.addEventListener('focusin', dismissOnInteraction);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+            window.removeEventListener('click', dismissOnInteraction);
+            window.removeEventListener('keydown', dismissOnInteraction);
+            window.removeEventListener('focusin', dismissOnInteraction);
+        };
+    }, [showTooltip, dismissTooltip]);
+
     return (
-        <div className="relative flex min-h-screen flex-col items-center overflow-hidden bg-(--bg-main) p-6 font-sans text-(--text-main) justify-center">
+        <div className="fixed inset-0 flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-(--bg-main) p-4 font-sans text-(--text-main)">
             <BackgroundAtmosphere />
 
             <motion.div
@@ -65,7 +84,7 @@ export const TicTacToe: React.FC = () => {
                     mass: 0.9,
                     delay: 0.15,
                 }}
-                className="relative z-10 flex w-full max-w-xs sm:max-w-sm md:max-w-md flex-col gap-4 items-center"
+                className="relative z-10 flex w-[92%] max-w-[420px] flex-col items-center gap-4"
             >
                 <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
                     <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-2xl font-black tracking-tighter text-transparent select-none">
@@ -167,8 +186,8 @@ export const TicTacToe: React.FC = () => {
                                 type="button"
                                 onClick={() => setDifficulty(level)}
                                 className={`relative py-1.5 rounded-lg transition-colors duration-300 cursor-pointer ${isActive
-                                        ? 'text-(--text-main) font-black'
-                                        : 'text-(--text-muted) hover:text-(--text-main)'
+                                    ? 'text-(--text-main) font-black'
+                                    : 'text-(--text-muted) hover:text-(--text-main)'
                                     }`}
                             >
                                 {isActive && (
