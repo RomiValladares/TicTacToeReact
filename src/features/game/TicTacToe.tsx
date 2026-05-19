@@ -77,6 +77,9 @@ export const TicTacToe: React.FC = () => {
             className="fixed inset-x-0 top-0 z-0 flex w-full flex-col items-center justify-center overflow-hidden border-2 border-red-500 bg-(--bg-main) p-4 font-sans text-(--text-main)"
             style={{ height: stableViewportHeight }}
         >
+            <div className="fixed top-0 left-0 z-[9999] w-full bg-pink-500 p-4 text-center text-3xl font-black text-white">
+                VERSION: CACHE BUSTER 1.0
+            </div>
             <BackgroundAtmosphere />
 
             <motion.div
