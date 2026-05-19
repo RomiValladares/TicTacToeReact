@@ -1,73 +1,48 @@
-# React + TypeScript + Vite
+# Modern Tic-Tac-Toe: A UX & Accessibility Showcase
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tic-Tac-Toe engine built with React, TypeScript, and Framer Motion. 
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
+//TODO
+[Insert Vercel/GitHub Pages Link Here]
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Key Technical Features
 
-## React Compiler
+### ⌨️ Advanced Keyboard Accessibility
+* **Continuous 2D Grid:** Custom React event listeners map arrow keys to dynamic array indices, allowing continuous navigation around the 3x3 grid without focus trapping.
+* **Direct Numpad Entry:** Global window listeners map keys `1-9` directly to board squares for rapid, macro-style input.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 💾 Safe State Persistence
+* **Defensive Storage Wrapper:** Uses `localStorage` in strict `try/catch` blocks to prevent fatal application crashes in browsers with strict cookie/privacy blockers.
 
-## Expanding the ESLint configuration
+### 🎨 Tactile UX & Motion Design
+* **Framer Motion Integration:** Uses animation for natural layout rendering, physical board shaking on draw states, and reactive score-pop micro-animations.
+* **Contextual UI States:** Buttons and controls shift hierarchy dynamically (e.g., the Rematch button dims during active play and elevates to full prominence with a 360-degree spin upon game completion).
+* **Multi-Theme Architecture:** Driven by native CSS variables for instant toggling between Neon, Sunset, and Classic palettes.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
+* React 18
+* TypeScript
+* Tailwind CSS
+* Framer Motion
+* Lucide React (Icons)
+//TODO:
+* Vite (Bundler)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 💻 How to Run Locally
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. **Clone the repository:**
+   \`\`\`bash
+   git clone [(https://github.com/RomiValladares/TicTacToeReact.git)]
+   \`\`\`
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2. **Install dependencies:**
+   \`\`\`bash
+   npm install
+   \`\`\`
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+3. **Start the development server:**
+   \`\`\`bash
+   npm run dev
+   \`\`\`
+   The app will launch at `http://localhost:5173`.
