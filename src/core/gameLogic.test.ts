@@ -3,6 +3,7 @@ import {
     createEmptyBoard,
     isMoveLegal,
     getWinner,
+    getGameState,
     getBestMove,
     PLAYERS,
     type Board,
@@ -21,6 +22,15 @@ describe('isMoveLegal', () => {
         const board = createEmptyBoard();
         expect(isMoveLegal(board, 0)).toBe(true);
         expect(isMoveLegal(board, 10)).toBe(false);
+    });
+});
+
+describe('getGameState', () => {
+    it('returns winner and winLine in one pass', () => {
+        const board: Board = ['X', 'X', 'X', null, 'O', null, null, null, 'O'];
+        const { winner, winLine } = getGameState(board);
+        expect(winner).toBe('X');
+        expect(winLine).toEqual([0, 1, 2]);
     });
 });
 

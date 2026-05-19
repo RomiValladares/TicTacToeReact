@@ -32,7 +32,6 @@ export type GameOutcome = PlayerMark | "draw" | null;
 
 /**
  * Returns the indices of the winning line [a, b, c] or null.
- * We'll use this later to highlight the winning squares in the UI.
  */
 export function getWinningLine(board: Board): readonly number[] | null {
     for (const [a, b, c] of WIN_LINES) {
@@ -45,20 +44,22 @@ export function getWinningLine(board: Board): readonly number[] | null {
     return null;
 }
 
-// Updated getWinner to be more robust
+export function getGameState(board: Board): {
+    winner: GameOutcome;
+    winLine: readonly number[] | null;
+} {
+    const winLine = getWinningLine(board);
+    if (winLine) {
+        return { winner: board[winLine[0]], winLine };
+    }
+    if (board.every((cell) => cell !== null)) {
+        return { winner: "draw", winLine: null };
+    }
+    return { winner: null, winLine: null };
+}
+
 export function getWinner(board: Board): GameOutcome {
-    // Check for a winner
-    const line = getWinningLine(board);
-    // if line found, return the mark at that position ('X' or 'O')
-    if (line) {
-        return board[line[0]];
-    }
-    // Check for a draw (if no nulls -> draw)
-    if (board.every(cell => cell !== null)) {
-        return "draw";
-    }
-    // Game is still ongoing
-    return null;
+    return getGameState(board).winner;
 }
 
 /**

@@ -52,3 +52,15 @@ This document serves as a technical audit trail for the development of the Tic-T
 ### Prompt:
 "Create a self-contained TypeScript utility using the browser's native Web Audio API to get a retro 8-bit game sounds without external asset files.
 - **Sounds:** Generate four distinct sound effects using oscillators and gain envelopes: 'clickX' (sharp upward blip), 'clickO' (lower response blip), 'win' (like an upward chord), and 'draw' (downward freq)."
+
+## 6. Refactor
+
+### Prompt:
+
+In TicTacToe.tsx
+
+* Extract logic into custom hooks (`useGamePersistence`, `useGameEngine`, `useKeyboardNavigation`).
+* Remove all business logic from the main `TicTacToe` component body.
+* Check `winner` and `winLine` calculations to prevent redundant re runs.
+* Consolidate the two redundant `theme` `useEffect` hooks into one hook.
+* Refactor to use event delegation (`{ capture: true }`) or a centralized `useEffect` that doesn't trigger on every re-render.
