@@ -121,7 +121,15 @@ const ScoreCard = ({
         <span className="mb-0.5 text-[10px] font-bold uppercase tracking-widest text-(--text-muted)">
             {label}
         </span>
-        <span className={`text-xl font-black ${colorClass}`}>{score}</span>
+        <motion.span
+            key={score}
+            initial={{ scale: 1.5, opacity: 0.5 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            className={`text-xl font-black ${colorClass}`}
+        >
+            {score}
+        </motion.span>
     </div>
 );
 
@@ -201,6 +209,18 @@ export const TicTacToe: React.FC = () => {
     const winner = getWinner(board);
     const winLine = getWinningLine(board);
 
+    const [showTooltip, setShowTooltip] = useState(() => {
+        //TODO: This tooltip is meant to be a one-time onboarding nudge for new users, not quite happy with UI yet
+        return safeStorage.getItem('tictactoe-onboarded', 'false') === 'false';
+    });
+
+    const dismissTooltip = () => {
+        if (showTooltip) {
+            setShowTooltip(false);
+            safeStorage.setItem('tictactoe-onboarded', 'true');
+        }
+    };
+
     useEffect(() => {
         if (!winner) return;
 
@@ -279,6 +299,7 @@ export const TicTacToe: React.FC = () => {
             }
 
             e.preventDefault();
+            dismissTooltip();
 
             const active = document.activeElement as HTMLButtonElement;
             let currentIndex = buttonsArray.indexOf(active);
@@ -363,30 +384,42 @@ export const TicTacToe: React.FC = () => {
                 <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
 
                 {/* GAME GRID */}
-                <main
-                    ref={gridRef}
-                    className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl p-3 shadow-2xl w-full focus-visible:outline-hidden`}
-                >
-                    {board.map((cell, i) => (
-                        <Square
-                            key={i}
-                            value={cell}
-                            isWinning={winLine?.includes(i) ?? false}
-                            isXNext={isXNext}
-                            disabled={!!cell || !!winner || isAiThinking}
-                            onClick={() => {
-                                if (isSoundOn) playSound('clickX');
+                <div className="relative w-full">
+                    {showTooltip && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            className="absolute -top-12 right-2 z-50 flex items-center gap-2 rounded-xl bg-(--primary) px-3 py-2 text-[10px] font-black uppercase tracking-widest text-(--bg-main) shadow-lg"
+                        >
+                            <span>Try using Arrow Keys or 1-9</span>
+                            <div className="absolute -bottom-1.5 right-6 h-3 w-3 rotate-45 bg-(--primary)" />
+                        </motion.div>
+                    )}
+                    <main
+                        ref={gridRef}
+                        className={`${surfaceMuted} grid grid-cols-3 gap-3 rounded-3xl p-3 shadow-2xl w-full focus-visible:outline-hidden`}
+                    >
+                        {board.map((cell, i) => (
+                            <Square
+                                key={i}
+                                value={cell}
+                                isWinning={winLine?.includes(i) ?? false}
+                                isXNext={isXNext}
+                                disabled={!!cell || !!winner || isAiThinking}
+                                onClick={() => {
+                                    if (isSoundOn) playSound('clickX');
 
-                                setBoard((prev) => applyMove(prev, i, PLAYERS.X));
-                                setIsXNext(false);
+                                    setBoard((prev) => applyMove(prev, i, PLAYERS.X));
+                                    dismissTooltip();
+                                    setIsXNext(false);
 
-                                // ✅ ADD THIS LINE so the global listener knows where to resume
-                                lastInteractionRef.current = i;
-                            }}
-                        />
-                    ))}
-                </main>
-
+                                    lastInteractionRef.current = i;
+                                }}
+                            />
+                        ))}
+                    </main>
+                </div>
                 {/* REMATCH */}
                 <button
                     ref={rematchBtnRef}
@@ -416,12 +449,26 @@ export const TicTacToe: React.FC = () => {
                 </button>
 
                 {/* METRICS */}
-                <div className={`${surfaceMuted} grid w-full grid-cols-3 rounded-2xl p-3 shadow-sm`}>
-                    <ScoreCard label="Player" score={scores.X} colorClass="text-(--primary)" />
-                    <ScoreCard label="Draws" score={scores.draws} colorClass="text-(--text-main)" />
-                    <ScoreCard label="AI" score={scores.O} colorClass="text-(--secondary)" isLast />
-                </div>
+                <div className="relative w-full mb-2 mt-1">
+                    <div className={`${surfaceMuted} grid w-full grid-cols-3 rounded-2xl p-3 pb-5 shadow-sm`}>
+                        <ScoreCard label="Player" score={scores.X} colorClass="text-(--primary)" />
+                        <ScoreCard label="Draws" score={scores.draws} colorClass="text-(--text-main)" />
+                        <ScoreCard label="AI" score={scores.O} colorClass="text-(--secondary)" isLast />
+                    </div>
 
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setScores({ X: 0, O: 0, draws: 0 });
+                            setBoard(createEmptyBoard());
+                            setIsXNext(true);
+                            setIsAiThinking(false);
+                        }}
+                        className="absolute -bottom-2.5 left-1/2 flex -translate-x-1/2 items-center justify-center rounded-full border border-(--text-main)/10 bg-(--text-main)/10 px-4 py-1 text-[9px] font-black uppercase tracking-widest text-(--text-main) shadow-sm backdrop-blur-md transition-all hover:border-(--text-main)/30 hover:bg-(--text-main)/20 cursor-pointer z-10"
+                    >
+                        Reset
+                    </button>
+                </div>
                 {/* DIFFICULTY SELECT */}
                 <div className="grid w-full grid-cols-3 p-1 bg-(--text-main)/5 rounded-xl border border-(--text-main)/10 text-center text-[10px] font-bold tracking-wider uppercase overflow-hidden">
                     {DIFFICULTY_LEVELS.map((level) => {
