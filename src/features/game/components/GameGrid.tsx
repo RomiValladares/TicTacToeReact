@@ -25,7 +25,7 @@ export const GameGrid = ({
     setSquareRef,
     onSquareClick,
 }: GameGridProps) => (
-    <div className="relative flex min-h-0 w-full flex-1 flex-col items-center justify-center md:flex-none">
+    <div className="relative w-full shrink-0">
         {showTooltip && (
             <motion.div
                 initial={{ opacity: 0, y: 10, scale: 0.9 }}
