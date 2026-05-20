@@ -37,9 +37,7 @@ export const GameGrid = ({
                 <div className="absolute -bottom-1.5 right-6 h-3 w-3 rotate-45 bg-(--primary)" />
             </motion.div>
         )}
-        <main
-            className={`${surfaceMuted} grid aspect-square w-full min-h-0 max-h-[min(100%,calc(var(--stable-vh)-13rem))] max-w-full shrink grid-cols-3 gap-2 rounded-3xl p-2 shadow-2xl focus-visible:outline-hidden sm:gap-3 sm:p-3`}
-        >
+        <main className={`${surfaceMuted} grid aspect-square w-full grid-cols-3 gap-3 md:gap-4 p-3 rounded-3xl`}>
             {board.map((cell, i) => (
                 <Square
                     key={i}
