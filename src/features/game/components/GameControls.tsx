@@ -1,6 +1,5 @@
 import type { RefObject } from 'react';
 import { RotateCcw } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 import type { GameOutcome } from '../../../core/gameLogic';
 import { DIFFICULTY_LEVELS, surfaceMuted } from '../constants';
@@ -68,7 +67,15 @@ export const GameControls = ({
             </button>
         </div>
 
-        <div className="grid w-full grid-cols-3 overflow-hidden rounded-xl border border-(--text-main)/10 bg-(--text-main)/5 p-1 text-center text-[10px] font-bold tracking-wider uppercase">
+        <div className="relative grid w-full grid-cols-3 overflow-hidden rounded-xl border border-(--text-main)/10 bg-(--text-main)/5 p-1 text-center text-[10px] font-bold tracking-wider uppercase">
+            <div
+                aria-hidden
+                className="pointer-events-none absolute top-1 bottom-1 left-1 rounded-lg bg-(--text-main)/10 shadow-xs transition-transform duration-200 ease-out will-change-transform motion-reduce:transition-none dark:bg-(--text-main)/15"
+                style={{
+                    width: 'calc((100% - 0.5rem) / 3)',
+                    transform: `translateX(calc(${DIFFICULTY_LEVELS.indexOf(difficulty)} * 100%))`,
+                }}
+            />
             {DIFFICULTY_LEVELS.map((level) => {
                 const isActive = difficulty === level;
                 return (
@@ -76,19 +83,12 @@ export const GameControls = ({
                         key={level}
                         type="button"
                         onClick={() => onDifficultyChange(level)}
-                        className={`relative cursor-pointer rounded-lg py-1.5 transition-colors duration-300 ${isActive
+                        className={`relative z-10 cursor-pointer rounded-lg py-1.5 transition-colors duration-300 ${isActive
                             ? 'font-black text-(--text-main)'
                             : 'text-(--text-muted) hover:text-(--text-main)'
                             }`}
                     >
-                        {isActive && (
-                            <motion.div
-                                layoutId="activeDifficultyIndicator"
-                                className="absolute inset-0 rounded-lg bg-(--text-main)/10 shadow-xs dark:bg-(--text-main)/15"
-                                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                            />
-                        )}
-                        <span className="relative z-10">{level}</span>
+                        {level}
                     </button>
                 );
             })}
