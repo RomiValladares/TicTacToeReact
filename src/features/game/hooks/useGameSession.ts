@@ -11,8 +11,7 @@ import {
 } from '../../../core/gameLogic';
 import { playSound } from '../soundEffects';
 import type { Difficulty } from '../types';
-
-type Scores = { X: number; O: number; draws: number };
+import { useGamePersistence } from './useGamePersistence';
 
 function toEngineDifficulty(difficulty: Difficulty): DifficultyLevel {
     if (difficulty === 'unbeatable') return 'Impossible';
@@ -30,7 +29,7 @@ export function useGameSession({ difficulty, isSoundOn, onSquarePlayed }: UseGam
     const [board, setBoard] = useState<Board>(() => createEmptyBoard());
     const [isXNext, setIsXNext] = useState(true);
     const [isAiThinking, setIsAiThinking] = useState(false);
-    const [scores, setScores] = useState<Scores>({ X: 0, O: 0, draws: 0 });
+    const { scores, setScores, resetScores } = useGamePersistence();
 
     const rematchBtnRef = useRef<HTMLButtonElement>(null);
     const resolvedWinnerRef = useRef<GameOutcome>(null);
@@ -100,9 +99,9 @@ export function useGameSession({ difficulty, isSoundOn, onSquarePlayed }: UseGam
     }, []);
 
     const resetAll = useCallback(() => {
-        setScores({ X: 0, O: 0, draws: 0 });
+        resetScores();
         rematch();
-    }, [rematch]);
+    }, [rematch, resetScores]);
 
     return {
         board,
