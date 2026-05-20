@@ -1,17 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { BackgroundAtmosphere } from './components/BackgroundAtmosphere';
-import { ThemeButton } from './components/ThemeButton';
-import { Square } from './components/Square';
-import { ScoreCard } from './components/ScoreCard';
-import { GameStatus } from './components/GameStatus';
-import { THEME_IDS, DIFFICULTY_LEVELS, surfaceMuted } from './constants';
+import { GameControls } from './components/GameControls';
+import { GameGrid } from './components/GameGrid';
+import { GameHeader } from './components/GameHeader';
 import { usePersistedSettings } from './hooks/usePersistedSettings';
 import { useGameSession } from './hooks/useGameSession';
 import { useGridKeyboard } from './hooks/useGridKeyboard';
-
 import { useStableViewportHeight } from './utils/useStableViewportHeight';
 
 export const TicTacToe: React.FC = () => {
@@ -76,7 +72,7 @@ export const TicTacToe: React.FC = () => {
 
     return (
         <div
-            className="fixed inset-x-0 top-0 z-0 flex w-full flex-col overflow-hidden bg-(--bg-main) px-3 py-2 font-sans text-(--text-main) md:items-center md:justify-center md:p-6"
+            className="fixed inset-x-0 top-0 z-0 flex w-full flex-col overflow-hidden bg-(--bg-main) px-5 py-2 font-sans text-(--text-main) md:items-center md:justify-center md:p-6"
             style={{
                 height: stableViewportHeight,
                 ['--stable-vh' as string]: `${stableViewportHeight}px`,
@@ -96,125 +92,36 @@ export const TicTacToe: React.FC = () => {
                 }}
                 className="relative z-10 flex h-full w-full min-h-0 flex-col md:h-auto md:max-w-md md:gap-4"
             >
-                <div className="flex w-full shrink-0 flex-col gap-1.5 md:gap-2">
-                    <header className="flex w-full items-center justify-between border-b border-(--text-main)/10 pb-3">
-                        <h1 className="bg-linear-to-br from-(--primary) to-(--secondary) bg-clip-text text-2xl font-black tracking-tighter text-transparent select-none">
-                            TIC TAC TOE
-                        </h1>
-                        <div className="flex items-center gap-3">
-                            <nav className={`${surfaceMuted} flex gap-2 rounded-full p-1`}>
-                                {THEME_IDS.map((t) => (
-                                    <ThemeButton key={t} type={t} current={theme} onSelect={setTheme} />
-                                ))}
-                            </nav>
-                            <button
-                                type="button"
-                                onClick={() => setIsSoundOn(!isSoundOn)}
-                                className="cursor-pointer p-1 text-(--text-muted) transition-colors hover:text-(--primary)"
-                                title={isSoundOn ? 'Mute Sound' : 'Unmute Sound'}
-                            >
-                                {isSoundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
-                            </button>
-                        </div>
-                    </header>
+                <GameHeader
+                    theme={theme}
+                    onThemeChange={setTheme}
+                    isSoundOn={isSoundOn}
+                    onSoundToggle={() => setIsSoundOn(!isSoundOn)}
+                    winner={winner}
+                    isAiThinking={isAiThinking}
+                    isXNext={isXNext}
+                />
 
-                    <GameStatus winner={winner} isAiThinking={isAiThinking} isXNext={isXNext} />
-                </div>
+                <GameGrid
+                    board={board}
+                    winner={winner}
+                    winningSquares={winningSquares}
+                    isXNext={isXNext}
+                    isAiThinking={isAiThinking}
+                    showTooltip={showTooltip}
+                    setSquareRef={setSquareRef}
+                    onSquareClick={handleSquareClick}
+                />
 
-                <div className="relative flex min-h-0 w-full flex-1 flex-col md:flex-none">
-                    {showTooltip && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            className="absolute -top-12 right-2 z-50 flex items-center gap-2 rounded-xl bg-(--primary) px-3 py-2 text-[10px] font-black uppercase tracking-widest text-(--bg-main) shadow-lg"
-                        >
-                            <span>Try using Arrow Keys or 1-9</span>
-                            <div className="absolute -bottom-1.5 right-6 h-3 w-3 rotate-45 bg-(--primary)" />
-                        </motion.div>
-                    )}
-                    <main
-                        className={`${surfaceMuted} grid aspect-square w-full min-h-0 max-h-[min(100%,calc(var(--stable-vh)-13rem))] max-w-full shrink grid-cols-3 gap-2 rounded-3xl p-2 shadow-2xl focus-visible:outline-hidden sm:gap-3 sm:p-3`}
-                    >
-                        {board.map((cell, i) => (
-                                <Square
-                                    key={i}
-                                    ref={setSquareRef(i)}
-                                    value={cell}
-                                    isWinning={winningSquares?.has(i) ?? false}
-                                    isXNext={isXNext}
-                                    disabled={!!cell || !!winner || isAiThinking}
-                                    onClick={() => handleSquareClick(i)}
-                                />
-                            ))}
-                        </main>
-                </div>
-
-                <div className="flex w-full shrink-0 flex-col gap-2 md:gap-3">
-                    <button
-                        ref={rematchBtnRef}
-                        type="button"
-                        onClick={rematch}
-                        className={`group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border py-2.5 text-xs font-black tracking-widest uppercase outline-hidden transition-all duration-300
-                        ${winner
-                                ? 'scale-100 border-transparent bg-(--text-main) text-(--bg-main) shadow-lg'
-                                : 'border-(--primary)/20 bg-(--primary)/10 text-(--primary) hover:border-(--primary)/40 hover:bg-(--primary)/20'
-                            }
-                        focus-visible:ring-2 ${winner ? 'focus-visible:ring-(--primary) focus-visible:ring-offset-4 focus-visible:ring-offset-(--bg-main)' : 'focus-visible:ring-(--primary)/50'}`}
-                    >
-                        <div
-                            className={`transition-transform duration-700 ease-out
-                        ${winner
-                                    ? '-rotate-360'
-                                    : 'group-hover:-rotate-360 group-focus-visible:-rotate-360'
-                                }`}
-                        >
-                            <RotateCcw size={14} strokeWidth={2.5} />
-                        </div>
-                        Rematch
-                    </button>
-                    <div className="relative mb-2 w-full">
-                        <div className={`${surfaceMuted} grid w-full grid-cols-3 rounded-2xl p-3 pb-5 shadow-sm`}>
-                            <ScoreCard label="Player" score={scores.X} colorClass="text-(--primary)" />
-                            <ScoreCard label="Draws" score={scores.draws} colorClass="text-(--text-main)" />
-                            <ScoreCard label="AI" score={scores.O} colorClass="text-(--secondary)" isLast />
-                        </div>
-
-                        <button
-                            type="button"
-                            onClick={resetAll}
-                            className="absolute -bottom-2.5 left-1/2 z-10 flex -translate-x-1/2 cursor-pointer items-center justify-center rounded-full border border-(--text-main)/10 bg-(--text-main)/10 px-4 py-1 text-[9px] font-black uppercase tracking-widest text-(--text-main) shadow-sm backdrop-blur-md transition-all hover:border-(--text-main)/30 hover:bg-(--text-main)/20"
-                        >
-                            Reset
-                        </button>
-                    </div>
-
-                    <div className="grid w-full grid-cols-3 overflow-hidden rounded-xl border border-(--text-main)/10 bg-(--text-main)/5 p-1 text-center text-[10px] font-bold tracking-wider uppercase">
-                        {DIFFICULTY_LEVELS.map((level) => {
-                            const isActive = difficulty === level;
-                            return (
-                                <button
-                                    key={level}
-                                    type="button"
-                                    onClick={() => setDifficulty(level)}
-                                    className={`relative cursor-pointer rounded-lg py-1.5 transition-colors duration-300 ${isActive
-                                        ? 'font-black text-(--text-main)'
-                                        : 'text-(--text-muted) hover:text-(--text-main)'
-                                        }`}
-                                >
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="activeDifficultyIndicator"
-                                            className="absolute inset-0 rounded-lg bg-(--text-main)/10 shadow-xs dark:bg-(--text-main)/15"
-                                            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                                        />
-                                    )}
-                                    <span className="relative z-10">{level}</span>
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
+                <GameControls
+                    winner={winner}
+                    scores={scores}
+                    difficulty={difficulty}
+                    rematchBtnRef={rematchBtnRef}
+                    onRematch={rematch}
+                    onResetAll={resetAll}
+                    onDifficultyChange={setDifficulty}
+                />
             </motion.div>
         </div>
     );
