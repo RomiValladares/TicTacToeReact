@@ -90,7 +90,7 @@ export const TicTacToe: React.FC = () => {
                     mass: 0.9,
                     delay: 0.15,
                 }}
-                className="relative z-10 flex h-full w-full min-h-0 flex-col justify-center gap-3 md:h-auto md:max-w-md md:gap-4"
+                className="relative z-10 flex h-full w-full min-h-0 flex-col justify-center gap-4 md:h-auto md:max-w-md md:gap-5"
             >
                 <GameHeader
                     theme={theme}

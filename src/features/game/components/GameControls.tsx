@@ -27,7 +27,7 @@ export const GameControls = ({
     onResetAll,
     onDifficultyChange,
 }: GameControlsProps) => (
-    <div className="flex w-full shrink-0 flex-col gap-2 md:gap-3">
+    <div className="flex w-full shrink-0 flex-col gap-4 md:gap-5">
         <button
             ref={rematchBtnRef}
             type="button"
