@@ -15,9 +15,13 @@ export function useStableViewportHeight(): number {
         let lastWidth = window.innerWidth;
 
         const syncHeight = () => {
-            setHeight(readViewportHeight());
+            const nextHeight = readViewportHeight();
+            setHeight(nextHeight);
+            document.documentElement.style.setProperty('--stable-vh', `${nextHeight}px`);
             lastWidth = window.innerWidth;
         };
+
+        syncHeight();
 
         const onResize = () => {
             if (window.innerWidth !== lastWidth) {
@@ -31,6 +35,7 @@ export function useStableViewportHeight(): number {
         return () => {
             window.removeEventListener('orientationchange', syncHeight);
             window.removeEventListener('resize', onResize);
+            document.documentElement.style.removeProperty('--stable-vh');
         };
     }, []);
 

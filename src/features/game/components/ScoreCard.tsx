@@ -8,9 +8,7 @@ type ScoreCardProps = {
 };
 
 export const ScoreCard = ({ label, score, colorClass, isLast = false }: ScoreCardProps) => (
-    <div
-        className={`flex min-h-14 flex-col items-center justify-center ${!isLast ? 'border-r border-(--text-main)/10' : ''}`}
-    >
+    <div className={`flex flex-col items-center ${!isLast ? 'border-r border-(--text-main)/10' : ''}`}>
         <span className="mb-0.5 text-[10px] font-bold uppercase tracking-widest text-(--text-muted)">
             {label}
         </span>
@@ -19,7 +17,7 @@ export const ScoreCard = ({ label, score, colorClass, isLast = false }: ScoreCar
             initial={{ scale: 1.5, opacity: 0.5 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.2 }}
-            className={`block h-7 text-xl leading-7 font-black ${colorClass}`}
+            className={`text-xl font-black ${colorClass}`}
         >
             {score}
         </motion.span>
