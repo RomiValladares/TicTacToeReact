@@ -20,7 +20,7 @@ export const Square = forwardRef<HTMLButtonElement, SquareProps>(
             className={`
             group relative z-10 flex w-full aspect-square items-center justify-center rounded-3xl border-2 bg-(--text-main)/5 transition-colors duration-300
             ring-4 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-(--primary) focus-visible:ring-offset-4 focus-visible:ring-offset-(--bg-main)
-            disabled:cursor-not-allowed
+            cursor-pointer disabled:cursor-not-allowed
             ${isWinning
                     ? 'border-(--primary)/50 bg-(--primary)/10 ring-(--primary)/50'
                     : 'border-(--text-main)/10 ring-transparent hover:bg-(--text-main)/15'}
