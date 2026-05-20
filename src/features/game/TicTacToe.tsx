@@ -5,6 +5,7 @@ import { BackgroundAtmosphere } from './components/BackgroundAtmosphere';
 import { GameControls } from './components/GameControls';
 import { GameGrid } from './components/GameGrid';
 import { GameHeader } from './components/GameHeader';
+import { GameStatus } from './components/GameStatus';
 import { usePersistedSettings } from './hooks/usePersistedSettings';
 import { useGameSession } from './hooks/useGameSession';
 import { useGridKeyboard } from './hooks/useGridKeyboard';
@@ -92,26 +93,33 @@ export const TicTacToe: React.FC = () => {
                 }}
                 className="relative z-10 flex h-full w-full min-h-0 flex-col justify-center gap-4 md:h-auto md:max-w-md md:gap-5"
             >
-                <GameHeader
-                    theme={theme}
-                    onThemeChange={setTheme}
-                    isSoundOn={isSoundOn}
-                    onSoundToggle={() => setIsSoundOn(!isSoundOn)}
-                    winner={winner}
-                    isAiThinking={isAiThinking}
-                    isXNext={isXNext}
-                />
+                <div className="flex w-full shrink-0 flex-col">
+                    <GameHeader
+                        theme={theme}
+                        onThemeChange={setTheme}
+                        isSoundOn={isSoundOn}
+                        onSoundToggle={() => setIsSoundOn(!isSoundOn)}
+                    />
 
-                <GameGrid
-                    board={board}
-                    winner={winner}
-                    winningSquares={winningSquares}
-                    isXNext={isXNext}
-                    isAiThinking={isAiThinking}
-                    showTooltip={showTooltip}
-                    setSquareRef={setSquareRef}
-                    onSquareClick={handleSquareClick}
-                />
+                    <div className="my-5 shrink-0">
+                        <GameStatus
+                            winner={winner}
+                            isAiThinking={isAiThinking}
+                            isXNext={isXNext}
+                        />
+                    </div>
+
+                    <GameGrid
+                        board={board}
+                        winner={winner}
+                        winningSquares={winningSquares}
+                        isXNext={isXNext}
+                        isAiThinking={isAiThinking}
+                        showTooltip={showTooltip}
+                        setSquareRef={setSquareRef}
+                        onSquareClick={handleSquareClick}
+                    />
+                </div>
 
                 <GameControls
                     winner={winner}
