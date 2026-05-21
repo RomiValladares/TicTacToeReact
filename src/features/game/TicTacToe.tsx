@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 import { BackgroundAtmosphere } from './components/BackgroundAtmosphere';
@@ -9,18 +9,18 @@ import { GameStatus } from './components/GameStatus';
 import { usePersistedSettings } from './hooks/usePersistedSettings';
 import { useGameSession } from './hooks/useGameSession';
 import { useGridKeyboard } from './hooks/useGridKeyboard';
-import { useStableViewportHeight } from './utils/useStableViewportHeight';
+import { useStableViewportHeight } from './hooks/useStableViewportHeight';
 
-export const TicTacToe: React.FC = () => {
+export function TicTacToe() {
     const {
         theme,
         setTheme,
         difficulty,
         setDifficulty,
         isSoundOn,
-        setIsSoundOn,
-        showTooltip,
-        dismissTooltip,
+        toggleSound,
+        isOnboardingVisible,
+        dismissOnboarding,
     } = usePersistedSettings();
 
     const stableViewportHeight = useStableViewportHeight();
@@ -29,8 +29,16 @@ export const TicTacToe: React.FC = () => {
 
     const { setSquareRef, recordInteraction } = useGridKeyboard({
         squareRefs,
-        onDismissTooltip: dismissTooltip,
+        onDismissOnboarding: dismissOnboarding,
     });
+
+    const handleSquarePlayed = useCallback(
+        (index: number) => {
+            recordInteraction(index);
+            dismissOnboarding();
+        },
+        [recordInteraction, dismissOnboarding],
+    );
 
     const {
         board,
@@ -46,18 +54,15 @@ export const TicTacToe: React.FC = () => {
     } = useGameSession({
         difficulty,
         isSoundOn,
-        onSquarePlayed: (index) => {
-            recordInteraction(index);
-            dismissTooltip();
-        },
+        onSquarePlayed: handleSquarePlayed,
     });
 
     useEffect(() => {
-        if (!showTooltip) return;
+        if (!isOnboardingVisible) return;
 
-        const timeoutId = window.setTimeout(dismissTooltip, 4000);
+        const timeoutId = window.setTimeout(dismissOnboarding, 4000);
 
-        const dismissOnInteraction = () => dismissTooltip();
+        const dismissOnInteraction = () => dismissOnboarding();
 
         window.addEventListener('click', dismissOnInteraction);
         window.addEventListener('keydown', dismissOnInteraction);
@@ -69,10 +74,10 @@ export const TicTacToe: React.FC = () => {
             window.removeEventListener('keydown', dismissOnInteraction);
             window.removeEventListener('focusin', dismissOnInteraction);
         };
-    }, [showTooltip, dismissTooltip]);
+    }, [isOnboardingVisible, dismissOnboarding]);
 
     return (
-        <div
+        <main
             className="fixed inset-x-0 top-0 z-0 flex w-full flex-col overflow-hidden bg-(--bg-main) px-5 py-2 font-sans text-(--text-main) md:items-center md:justify-center md:p-6"
             style={{
                 height: stableViewportHeight,
@@ -98,7 +103,7 @@ export const TicTacToe: React.FC = () => {
                         theme={theme}
                         onThemeChange={setTheme}
                         isSoundOn={isSoundOn}
-                        onSoundToggle={() => setIsSoundOn(!isSoundOn)}
+                        onSoundToggle={toggleSound}
                     />
 
                     <div className="my-5 shrink-0">
@@ -115,7 +120,7 @@ export const TicTacToe: React.FC = () => {
                         winningSquares={winningSquares}
                         isXNext={isXNext}
                         isAiThinking={isAiThinking}
-                        showTooltip={showTooltip}
+                        isOnboardingVisible={isOnboardingVisible}
                         setSquareRef={setSquareRef}
                         onSquareClick={handleSquareClick}
                     />
@@ -131,6 +136,6 @@ export const TicTacToe: React.FC = () => {
                     onDifficultyChange={setDifficulty}
                 />
             </motion.div>
-        </div>
+        </main>
     );
-};
+}
