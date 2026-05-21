@@ -27,6 +27,12 @@ type UseGameSessionOptions = {
 
 export function useGameSession({ difficulty, isSoundOn, onSquarePlayed }: UseGameSessionOptions) {
     const [board, setBoard] = useState<Board>(() => createEmptyBoard());
+    //fixes a bug in Vercel
+    const latestBoard = useRef(board);
+    useEffect(() => {
+        latestBoard.current = board;
+    }, [board]);
+
     const [isXNext, setIsXNext] = useState(true);
     const [isAiThinking, setIsAiThinking] = useState(false);
     const { scores, setScores, resetScores } = useGamePersistence();
@@ -65,22 +71,25 @@ export function useGameSession({ difficulty, isSoundOn, onSquarePlayed }: UseGam
     useEffect(() => {
         if (!isXNext && !winner) {
             setIsAiThinking(true);
+
             const timer = setTimeout(() => {
                 const engineDifficulty = toEngineDifficulty(difficulty);
-                setBoard((prev) => {
-                    const aiMove = getBestMove(prev, PLAYERS.O, engineDifficulty);
-                    if (aiMove === null) return prev;
+                const aiMove = getBestMove(board, PLAYERS.O, engineDifficulty);
+
+                if (aiMove !== null) {
                     if (isSoundOn) playSound('clickO');
-                    return applyMove(prev, aiMove, PLAYERS.O);
-                });
-                setIsXNext(true);
+                    setBoard(applyMove(board, aiMove, PLAYERS.O));
+                    setIsXNext(true);
+                }
+
                 setIsAiThinking(false);
             }, 600);
+
             return () => clearTimeout(timer);
         }
 
         setIsAiThinking(false);
-    }, [isXNext, winner, difficulty, isSoundOn]);
+    }, [isXNext, winner, difficulty, isSoundOn, board]);
 
     const handleSquareClick = useCallback(
         (index: number) => {
