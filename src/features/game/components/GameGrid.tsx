@@ -41,6 +41,7 @@ export const GameGrid = ({
             {board.map((cell, i) => (
                 <Square
                     key={i}
+                    index={i}
                     ref={setSquareRef(i)}
                     value={cell}
                     isWinning={winningSquares?.has(i) ?? false}
