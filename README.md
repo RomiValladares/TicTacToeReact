@@ -3,7 +3,7 @@
 Tic-Tac-Toe engine built with React, TypeScript, and Framer Motion. 
 
 ## 🚀 Live Demo
-[[Tic Tac Toe](https://tic-tac-toe-react-a4uof7v68-ro-v-s-projects.vercel.app/)]
+[[Tic Tac Toe](https://tic-tac-toe-react-seven-zeta.vercel.app/)]
 
 ## ✨ Key Technical Features
 
