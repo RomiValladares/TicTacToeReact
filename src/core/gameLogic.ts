@@ -33,7 +33,7 @@ export type GameOutcome = PlayerMark | "draw" | null;
 /**
  * Returns the indices of the winning line [a, b, c] or null.
  */
-export function getWinningLine(board: Board): readonly number[] | null {
+function getWinningLine(board: Board): readonly number[] | null {
     for (const [a, b, c] of WIN_LINES) {
         // check that the first cell isn't empty, 
         // and that it matches the other two cells.
@@ -71,7 +71,7 @@ export function applyMove(board: Board, index: number, mark: PlayerMark): Board 
     return newBoard;
 }
 
-const SCORES = {
+const MINIMAX_SCORES = {
     WIN: 10,
     LOSS: -10,
     DRAW: 0
@@ -86,9 +86,9 @@ function minimax(
 ): number {
     const result = getWinner(board);
 
-    if (result === aiMark) return SCORES.WIN - depth; // Subtract depth to prefer faster wins
-    if (result === humanMark) return SCORES.LOSS + depth; // Add depth to delay losses
-    if (result === "draw") return SCORES.DRAW;
+    if (result === aiMark) return MINIMAX_SCORES.WIN - depth; // Subtract depth to prefer faster wins
+    if (result === humanMark) return MINIMAX_SCORES.LOSS + depth; // Add depth to delay losses
+    if (result === "draw") return MINIMAX_SCORES.DRAW;
 
     if (isMaximizing) {
         let bestScore = -Infinity;

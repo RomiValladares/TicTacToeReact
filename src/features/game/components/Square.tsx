@@ -3,20 +3,43 @@ import { X, Circle } from 'lucide-react';
 import type { Cell } from '../../../core/gameLogic';
 
 export type SquareProps = {
+    index: number;
     value: Cell;
     isWinning: boolean;
     isXNext: boolean;
-    disabled: boolean;
+    isDisabled: boolean;
     onClick: () => void;
 };
 
+function getSquareAriaLabel(
+    index: number,
+    value: Cell,
+    isWinning: boolean,
+    isXNext: boolean,
+    isDisabled: boolean,
+): string {
+    const position = index + 1;
+
+    if (value === 'X') {
+        return `Square ${position}, X${isWinning ? ', winning square' : ''}`;
+    }
+    if (value === 'O') {
+        return `Square ${position}, O${isWinning ? ', winning square' : ''}`;
+    }
+    if (isDisabled) {
+        return `Square ${position}, empty, unavailable`;
+    }
+    return `Square ${position}, empty, play ${isXNext ? 'X' : 'O'}`;
+}
+
 export const Square = forwardRef<HTMLButtonElement, SquareProps>(
-    ({ value, isWinning, isXNext, disabled, onClick }, ref) => (
+    ({ index, value, isWinning, isXNext, isDisabled, onClick }, ref) => (
         <button
             ref={ref}
             type="button"
             onClick={onClick}
-            disabled={disabled}
+            disabled={isDisabled}
+            aria-label={getSquareAriaLabel(index, value, isWinning, isXNext, isDisabled)}
             className={`
             group relative z-10 flex w-full aspect-square items-center justify-center rounded-3xl border-2 bg-(--text-main)/5 transition-colors duration-300
             ring-4 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-(--primary) focus-visible:ring-offset-4 focus-visible:ring-offset-(--bg-main)
@@ -27,23 +50,25 @@ export const Square = forwardRef<HTMLButtonElement, SquareProps>(
         `}
         >
             {value === 'X' && (
-                <X size={40} strokeWidth={3} className="icon-glow-primary h-[45%] w-[45%] text-(--primary)" />
+                <X aria-hidden size={40} strokeWidth={3} className="icon-glow-primary h-[45%] w-[45%] text-(--primary)" />
             )}
             {value === 'O' && (
-                <Circle size={34} strokeWidth={3} className="icon-glow-secondary h-[40%] w-[40%] text-(--secondary)" />
+                <Circle aria-hidden size={34} strokeWidth={3} className="icon-glow-secondary h-[40%] w-[40%] text-(--secondary)" />
             )}
 
             {!value && (isXNext ? (
                 <X
+                    aria-hidden
                     size={40}
                     strokeWidth={3}
-                    className={`h-[45%] w-[45%] text-(--text-main) ${disabled ? 'opacity-0' : 'opacity-0 group-hover:opacity-20'}`}
+                    className={`h-[45%] w-[45%] text-(--text-main) opacity-0 ${isDisabled ? '' : 'group-hover:opacity-20'}`}
                 />
             ) : (
                 <Circle
+                    aria-hidden
                     size={34}
                     strokeWidth={3}
-                    className={`h-[40%] w-[40%] text-(--text-main) ${disabled ? 'opacity-0' : 'opacity-0 group-hover:opacity-20'}`}
+                    className={`h-[40%] w-[40%] text-(--text-main) opacity-0 ${isDisabled ? '' : 'group-hover:opacity-20'}`}
                 />
             ))}
         </button>
