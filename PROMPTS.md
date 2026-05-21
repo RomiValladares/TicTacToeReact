@@ -64,3 +64,20 @@ In TicTacToe.tsx
 * Check `winner` and `winLine` calculations to prevent redundant re runs.
 * Consolidate the two redundant `theme` `useEffect` hooks into one hook.
 * Refactor to use event delegation (`{ capture: true }`) or a centralized `useEffect` that doesn't trigger on every re-render.
+
+## 7. Final Polish & Refactor
+
+### Prompt: 
+
+Execute the following refactoring tasks across the `src/` directory. Do not alter the core game logic, CSS layout rules, or Framer Motion animations. 
+
+- **Export Styles:** Standardize export styles across the feature folders (ensure components use consistent named exports or default exports).
+- **Domain Collisions:** Resolve the domain naming collision between the `SCORES` object (minimax weights) and the `Scores` type (player stats) to prevent confusion.
+- **Formatting:** Fix semicolon inconsistencies across files (e.g., `usePersistedSettings.ts`).
+
+- **Hook Locations:** Move any stray hooks (like `useStableViewportHeight.ts`) out of `utils/` and into the proper `hooks/` directory.
+- **HTML Semantics:** Fix the semantic layout in `GameGrid.tsx` on line 40 where a `<main>` tag is nested incorrectly. Replace it with a `<div>` or `<section>` to ensure there is only one top-level `<main>` in the app.
+
+- **useGameSession.ts (Deps):** Resolve the `exhaustive-deps` warning by adding `setScores` to the dependency array.
+- **useGameSession.ts (State):** Fix the `set-state-in-effect` anti-pattern. Do not call `setIsAiThinking` synchronously inside the `useEffect`.
+- **soundEffects.ts:** Remove the `any` cast for `webkitAudioContext`. Use proper TypeScript interface extension for the `Window` object.

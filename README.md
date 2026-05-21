@@ -3,8 +3,7 @@
 Tic-Tac-Toe engine built with React, TypeScript, and Framer Motion. 
 
 ## 🚀 Live Demo
-//TODO
-[Insert Vercel/GitHub Pages Link Here]
+[[Tic Tac Toe](https://tic-tac-toe-react-a4uof7v68-ro-v-s-projects.vercel.app/)]
 
 ## ✨ Key Technical Features
 
@@ -20,13 +19,16 @@ Tic-Tac-Toe engine built with React, TypeScript, and Framer Motion.
 * **Contextual UI States:** Buttons and controls shift hierarchy dynamically (e.g., the Rematch button dims during active play and elevates to full prominence with a 360-degree spin upon game completion).
 * **Multi-Theme Architecture:** Driven by native CSS variables for instant toggling between Neon, Sunset, and Classic palettes.
 
+### Mobile Orientation
+* This application is strictly optimized for portrait orientation on mobile devices. 
+* Landscape mode on mobile is currently unsupported.
+
 ## 🛠️ Tech Stack
 * React 18
 * TypeScript
 * Tailwind CSS
 * Framer Motion
 * Lucide React (Icons)
-//TODO:
 * Vite (Bundler)
 
 ## 💻 How to Run Locally

@@ -9,10 +9,10 @@ const ARROW_STEP: Record<string, number> = {
 
 type UseGridKeyboardOptions = {
     squareRefs: RefObject<(HTMLButtonElement | null)[]>;
-    onDismissTooltip: () => void;
+    onDismissOnboarding: () => void;
 };
 
-export function useGridKeyboard({ squareRefs, onDismissTooltip }: UseGridKeyboardOptions) {
+export function useGridKeyboard({ squareRefs, onDismissOnboarding }: UseGridKeyboardOptions) {
     const lastInteractionRef = useRef(4);
 
     const setSquareRef = useCallback(
@@ -42,7 +42,7 @@ export function useGridKeyboard({ squareRefs, onDismissTooltip }: UseGridKeyboar
             if (step === undefined) return;
 
             e.preventDefault();
-            onDismissTooltip();
+            onDismissOnboarding();
 
             const active = document.activeElement;
             let currentIndex = buttons.findIndex((btn) => btn === active);
@@ -76,7 +76,7 @@ export function useGridKeyboard({ squareRefs, onDismissTooltip }: UseGridKeyboar
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [squareRefs, onDismissTooltip]);
+    }, [squareRefs, onDismissOnboarding]);
 
     const recordInteraction = useCallback((index: number) => {
         lastInteractionRef.current = index;

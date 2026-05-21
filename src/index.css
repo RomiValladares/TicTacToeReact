@@ -13,10 +13,6 @@
   filter: drop-shadow(0 0 8px var(--secondary));
 }
 
-@utility title-glow-primary {
-  filter: drop-shadow(0 0 15px var(--primary));
-}
-
 :root {
   --primary: #34d399;
   --secondary: #22d3ee;

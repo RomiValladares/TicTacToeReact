@@ -60,33 +60,40 @@ export function useGameSession({ difficulty, isSoundOn, onSquarePlayed }: UseGam
         });
 
         rematchBtnRef.current?.focus();
-    }, [winner, isSoundOn]);
+    }, [winner, isSoundOn, setScores]);
 
     useEffect(() => {
-        if (!isXNext && !winner) {
-            setIsAiThinking(true);
-            const timer = setTimeout(() => {
-                const engineDifficulty = toEngineDifficulty(difficulty);
-                setBoard((prev) => {
-                    const aiMove = getBestMove(prev, PLAYERS.O, engineDifficulty);
-                    if (aiMove === null) return prev;
-                    if (isSoundOn) playSound('clickO');
-                    return applyMove(prev, aiMove, PLAYERS.O);
-                });
-                setIsXNext(true);
-                setIsAiThinking(false);
-            }, 600);
-            return () => clearTimeout(timer);
-        }
+        if (!isAiThinking || isXNext || winner) return;
 
-        setIsAiThinking(false);
-    }, [isXNext, winner, difficulty, isSoundOn]);
+        const timer = setTimeout(() => {
+            const engineDifficulty = toEngineDifficulty(difficulty);
+            setBoard((prev) => {
+                const aiMove = getBestMove(prev, PLAYERS.O, engineDifficulty);
+                if (aiMove === null) return prev;
+                if (isSoundOn) playSound('clickO');
+                return applyMove(prev, aiMove, PLAYERS.O);
+            });
+            setIsXNext(true);
+            setIsAiThinking(false);
+        }, 600);
+
+        return () => clearTimeout(timer);
+    }, [isAiThinking, isXNext, winner, difficulty, isSoundOn]);
 
     const handleSquareClick = useCallback(
         (index: number) => {
             if (isSoundOn) playSound('clickX');
-            setBoard((prev) => applyMove(prev, index, PLAYERS.X));
+
+            let shouldRunAi = false;
+            setBoard((prev) => {
+                const next = applyMove(prev, index, PLAYERS.X);
+                shouldRunAi = getGameState(next).winner === null;
+                return next;
+            });
             setIsXNext(false);
+            if (shouldRunAi) {
+                setIsAiThinking(true);
+            }
             onSquarePlayed?.(index);
         },
         [isSoundOn, onSquarePlayed],

@@ -15,7 +15,7 @@ export function usePersistedSettings() {
         () => safeStorage.getItem('tictactoe-sound', 'true') !== 'false',
     );
 
-    const [showTooltip, setShowTooltip] = useState(
+    const [isOnboardingVisible, setIsOnboardingVisible] = useState(
         () => safeStorage.getItem('tictactoe-onboarded', 'false') === 'false',
     );
 
@@ -32,8 +32,12 @@ export function usePersistedSettings() {
         safeStorage.setItem('tictactoe-sound', String(isSoundOn));
     }, [isSoundOn]);
 
-    const dismissTooltip = useCallback(() => {
-        setShowTooltip((visible) => {
+    const toggleSound = useCallback(() => {
+        setIsSoundOn((on) => !on);
+    }, []);
+
+    const dismissOnboarding = useCallback(() => {
+        setIsOnboardingVisible((visible) => {
             if (visible) {
                 safeStorage.setItem('tictactoe-onboarded', 'true');
             }
@@ -47,8 +51,8 @@ export function usePersistedSettings() {
         difficulty,
         setDifficulty,
         isSoundOn,
-        setIsSoundOn,
-        showTooltip,
-        dismissTooltip,
+        toggleSound,
+        isOnboardingVisible,
+        dismissOnboarding,
     };
-};
+}

@@ -22,7 +22,7 @@ export const GameHeader = ({
             TIC TAC TOE
         </h1>
         <div className="flex items-center gap-3">
-            <nav className={`${surfaceMuted} flex gap-2 rounded-full p-1`}>
+            <nav aria-label="Theme" className={`${surfaceMuted} flex gap-2 rounded-full p-1`}>
                 {THEME_IDS.map((t) => (
                     <ThemeButton key={t} type={t} current={theme} onSelect={onThemeChange} />
                 ))}
@@ -30,10 +30,10 @@ export const GameHeader = ({
             <button
                 type="button"
                 onClick={onSoundToggle}
+                aria-label={isSoundOn ? 'Mute sound' : 'Unmute sound'}
                 className="cursor-pointer p-1 text-(--text-muted) transition-colors hover:text-(--primary)"
-                title={isSoundOn ? 'Mute Sound' : 'Unmute Sound'}
             >
-                {isSoundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
+                {isSoundOn ? <Volume2 aria-hidden size={18} /> : <VolumeX aria-hidden size={18} />}
             </button>
         </div>
     </header>

@@ -7,11 +7,23 @@ type ThemeButtonProps = {
     onSelect: (t: ThemeId) => void;
 };
 
-export const ThemeButton = ({ type, current, onSelect }: ThemeButtonProps) => (
-    <button
-        type="button"
-        onClick={() => onSelect(type)}
-        className={`h-5 w-5 rounded-full border-2 transition-all cursor-pointer ${current === type ? 'scale-110 border-(--text-main)' : 'border-transparent opacity-40 hover:opacity-100'}`}
-        style={{ backgroundColor: THEME_SWATCH[type] }}
-    />
-);
+const THEME_LABEL: Record<ThemeId, string> = {
+    neon: 'Neon',
+    sunset: 'Sunset',
+    classic: 'Classic',
+};
+
+export const ThemeButton = ({ type, current, onSelect }: ThemeButtonProps) => {
+    const isSelected = current === type;
+
+    return (
+        <button
+            type="button"
+            onClick={() => onSelect(type)}
+            aria-label={`${THEME_LABEL[type]} theme${isSelected ? ', selected' : ''}`}
+            aria-pressed={isSelected}
+            className={`h-5 w-5 rounded-full border-2 transition-all cursor-pointer ${isSelected ? 'scale-110 border-(--text-main)' : 'border-transparent opacity-40 hover:opacity-100'}`}
+            style={{ backgroundColor: THEME_SWATCH[type] }}
+        />
+    );
+};

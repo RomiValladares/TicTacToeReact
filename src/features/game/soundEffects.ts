@@ -1,8 +1,20 @@
+type WindowWithWebkitAudio = Window & {
+    webkitAudioContext?: typeof AudioContext;
+};
+
 let audioCtx: AudioContext | null = null;
 
 function getAudioContext(): AudioContext {
     if (!audioCtx) {
-        audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const AudioContextCtor =
+            window.AudioContext
+            ?? (window as WindowWithWebkitAudio).webkitAudioContext;
+
+        if (!AudioContextCtor) {
+            throw new Error('Web Audio API is not supported in this browser');
+        }
+
+        audioCtx = new AudioContextCtor();
     }
     return audioCtx;
 }
